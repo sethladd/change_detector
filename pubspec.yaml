@@ -1,0 +1,17 @@
+name: change_detector
+description: A simple command-line application created by Gemini.
+# version: 1.0.0
+# homepage: https://www.example.com
+
+environment:
+  sdk: '>=2.12.0 <3.0.0'
+
+# dependencies:
+#   path: ^1.8.0
+
+dev_dependencies:
+  lints: ^2.0.0
+dependencies:
+  analyzer: ^8.1.0
+  args: ^2.7.0
+  path: ^1.9.1

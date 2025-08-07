@@ -1,0 +1,45 @@
+{
+  "Awesome": {
+    "interfaces": [],
+    "kind": "class",
+    "members": {
+      "constructor:new": {
+        "abstract": false,
+        "const": false,
+        "factory": false,
+        "kind": "constructor",
+        "parameters": [],
+        "returnType": "Awesome",
+        "static": false,
+        "typeParameters": []
+      },
+      "getter:name": {
+        "abstract": false,
+        "kind": "getter",
+        "parameters": [],
+        "returnType": "String",
+        "static": false,
+        "typeParameters": []
+      }
+    },
+    "mixins": [],
+    "modifiers": [],
+    "supertype": null,
+    "typeParameters": []
+  },
+  "doCoolStuff": {
+    "abstract": false,
+    "kind": "function",
+    "parameters": [
+      {
+        "name": "name",
+        "type": "String",
+        "kind": "RP",
+        "hasDefault": false
+      }
+    ],
+    "returnType": "void",
+    "static": true,
+    "typeParameters": []
+  }
+}
