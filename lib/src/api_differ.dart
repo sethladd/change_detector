@@ -472,6 +472,10 @@ class ApiDiffer {
               'MAJOR: Const field ${oldField.name} in class ${oldClass.name} changed value from ${oldField.constValue} to ${newField.constValue}');
           changeType = ChangeType.major;
         }
+        if (oldField.isStatic != newField.isStatic) {
+          reasons.add('MAJOR: Field ${oldField.name} in class ${oldClass.name} changed static scope');
+          changeType = ChangeType.major;
+        }
       }
     }
 
@@ -541,6 +545,11 @@ class ApiDiffer {
     if (oldMethod.returnType != newMethod.returnType) {
       reasons.add(
           'MAJOR: Method ${oldMethod.name} return type changed from ${oldMethod.returnType} to ${newMethod.returnType}');
+      changeType = ChangeType.major;
+    }
+
+    if (oldMethod.isStatic != newMethod.isStatic) {
+      reasons.add('MAJOR: Method ${oldMethod.name} changed static scope');
       changeType = ChangeType.major;
     }
 

@@ -262,59 +262,45 @@ void main() {
       test('adding a field is a MINOR change', () {
         final oldApi = _createApiWithClassAndFields([]);
         final newApi = _createApiWithClassAndFields([
-          FieldApi(
-              name: 'testField', type: 'int', isFinal: false, isConst: false)
+          FieldApi(name: 'testField', type: 'int', isFinal: false, isConst: false, isStatic: false)
         ]);
         final result = differ.compare(oldApi, newApi);
         expect(result.changeType, equals(ChangeType.minor));
-        expect(result.reasons,
-            contains('MINOR: Added field testField to class TestClass'));
+        expect(result.reasons, contains('MINOR: Added field testField to class TestClass'));
       });
 
       test('removing a field is a MAJOR change', () {
         final oldApi = _createApiWithClassAndFields([
-          FieldApi(
-              name: 'testField', type: 'int', isFinal: false, isConst: false)
+          FieldApi(name: 'testField', type: 'int', isFinal: false, isConst: false, isStatic: false)
         ]);
         final newApi = _createApiWithClassAndFields([]);
         final result = differ.compare(oldApi, newApi);
         expect(result.changeType, equals(ChangeType.major));
-        expect(result.reasons,
-            contains('MAJOR: Removed field testField from class TestClass'));
+        expect(result.reasons, contains('MAJOR: Removed field testField from class TestClass'));
       });
 
       test('changing a field type is a MAJOR change', () {
         final oldApi = _createApiWithClassAndFields([
-          FieldApi(
-              name: 'testField', type: 'int', isFinal: false, isConst: false)
+          FieldApi(name: 'testField', type: 'int', isFinal: false, isConst: false, isStatic: false)
         ]);
         final newApi = _createApiWithClassAndFields([
-          FieldApi(
-              name: 'testField', type: 'String', isFinal: false, isConst: false)
+          FieldApi(name: 'testField', type: 'String', isFinal: false, isConst: false, isStatic: false)
         ]);
         final result = differ.compare(oldApi, newApi);
         expect(result.changeType, equals(ChangeType.major));
-        expect(
-            result.reasons,
-            contains(
-                'MAJOR: Field testField in class TestClass changed type from int to String'));
+        expect(result.reasons, contains('MAJOR: Field testField in class TestClass changed type from int to String'));
       });
 
       test('changing a field to final is a MAJOR change', () {
         final oldApi = _createApiWithClassAndFields([
-          FieldApi(
-              name: 'testField', type: 'int', isFinal: false, isConst: false)
+          FieldApi(name: 'testField', type: 'int', isFinal: false, isConst: false, isStatic: false)
         ]);
         final newApi = _createApiWithClassAndFields([
-          FieldApi(
-              name: 'testField', type: 'int', isFinal: true, isConst: false)
+          FieldApi(name: 'testField', type: 'int', isFinal: true, isConst: false, isStatic: false)
         ]);
         final result = differ.compare(oldApi, newApi);
         expect(result.changeType, equals(ChangeType.major));
-        expect(
-            result.reasons,
-            contains(
-                'MAJOR: Field testField in class TestClass was changed to final'));
+        expect(result.reasons, contains('MAJOR: Field testField in class TestClass was changed to final'));
       });
     });
 
@@ -670,55 +656,88 @@ void main() {
 
       test('changing a const field value is a MAJOR change', () {
         final oldApi = _createApiWithClassAndFields([
-          FieldApi(
-              name: 'testField',
-              type: 'int',
-              isFinal: false,
-              isConst: true,
-              constValue: '1')
+          FieldApi(name: 'testField', type: 'int', isFinal: false, isConst: true, constValue: '1', isStatic: false)
         ]);
         final newApi = _createApiWithClassAndFields([
-          FieldApi(
-              name: 'testField',
-              type: 'int',
-              isFinal: false,
-              isConst: true,
-              constValue: '2')
+          FieldApi(name: 'testField', type: 'int', isFinal: false, isConst: true, constValue: '2', isStatic: false)
         ]);
         final result = differ.compare(oldApi, newApi);
         expect(result.changeType, equals(ChangeType.major));
-        expect(
-            result.reasons,
-            contains(
-                'MAJOR: Const field testField in class TestClass changed value from 1 to 2'));
+        expect(result.reasons, contains('MAJOR: Const field testField in class TestClass changed value from 1 to 2'));
+      });
+    });
+
+    group('Static keyword changes', () {
+      test('changing a method to static is a MAJOR change', () {
+        final oldApi = _createApiWithMethodParams([], isStatic: false);
+        final newApi = _createApiWithMethodParams([], isStatic: true);
+        final result = differ.compare(oldApi, newApi);
+        expect(result.changeType, equals(ChangeType.major));
+        expect(result.reasons, contains('MAJOR: Method testMethod changed static scope'));
+      });
+
+      test('changing a method from static is a MAJOR change', () {
+        final oldApi = _createApiWithMethodParams([], isStatic: true);
+        final newApi = _createApiWithMethodParams([], isStatic: false);
+        final result = differ.compare(oldApi, newApi);
+        expect(result.changeType, equals(ChangeType.major));
+        expect(result.reasons, contains('MAJOR: Method testMethod changed static scope'));
+      });
+
+      test('changing a field to static is a MAJOR change', () {
+        final oldApi = _createApiWithClassAndFields([
+          FieldApi(name: 'testField', type: 'int', isFinal: false, isConst: false, isStatic: false)
+        ]);
+        final newApi = _createApiWithClassAndFields([
+          FieldApi(name: 'testField', type: 'int', isFinal: false, isConst: false, isStatic: true)
+        ]);
+        final result = differ.compare(oldApi, newApi);
+        expect(result.changeType, equals(ChangeType.major));
+        expect(result.reasons, contains('MAJOR: Field testField in class TestClass changed static scope'));
+      });
+
+      test('changing a field from static is a MAJOR change', () {
+        final oldApi = _createApiWithClassAndFields([
+          FieldApi(name: 'testField', type: 'int', isFinal: false, isConst: false, isStatic: true)
+        ]);
+        final newApi = _createApiWithClassAndFields([
+          FieldApi(name: 'testField', type: 'int', isFinal: false, isConst: false, isStatic: false)
+        ]);
+        final result = differ.compare(oldApi, newApi);
+        expect(result.changeType, equals(ChangeType.major));
+        expect(result.reasons, contains('MAJOR: Field testField in class TestClass changed static scope'));
       });
     });
 
     group('Constructor changes', () {
       test('adding a constructor is a MINOR change', () {
         final oldApi = _createApiWithConstructors([]);
-        final newApi = _createApiWithConstructors([
-          ConstructorApi(name: 'TestConstructor', parameters: [])
-        ]);
+        final newApi = _createApiWithConstructors(
+            [ConstructorApi(name: 'TestConstructor', parameters: [])]);
         final result = differ.compare(oldApi, newApi);
         expect(result.changeType, equals(ChangeType.minor));
-        expect(result.reasons, contains('MINOR: Added constructor TestConstructor to class TestClass'));
+        expect(
+            result.reasons,
+            contains(
+                'MINOR: Added constructor TestConstructor to class TestClass'));
       });
 
       test('removing a constructor is a MAJOR change', () {
-        final oldApi = _createApiWithConstructors([
-          ConstructorApi(name: 'TestConstructor', parameters: [])
-        ]);
+        final oldApi = _createApiWithConstructors(
+            [ConstructorApi(name: 'TestConstructor', parameters: [])]);
         final newApi = _createApiWithConstructors([]);
         final result = differ.compare(oldApi, newApi);
         expect(result.changeType, equals(ChangeType.major));
-        expect(result.reasons, contains('MAJOR: Removed constructor TestConstructor from class TestClass'));
+        expect(
+            result.reasons,
+            contains(
+                'MAJOR: Removed constructor TestConstructor from class TestClass'));
       });
     });
   });
 }
 
-Api _createApiWithMethodParams(List<ParameterApi> params) {
+Api _createApiWithMethodParams(List<ParameterApi> params, {bool isStatic = false}) {
   return _createApiWithItems(classes: [
     ClassApi(
       name: 'TestClass',
@@ -727,6 +746,7 @@ Api _createApiWithMethodParams(List<ParameterApi> params) {
           name: 'testMethod',
           returnType: 'void',
           parameters: params,
+          isStatic: isStatic,
         )
       ],
       fields: [],

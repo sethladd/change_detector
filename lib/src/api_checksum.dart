@@ -119,11 +119,13 @@ class MethodApi {
   final String name;
   final String returnType;
   final List<ParameterApi> parameters;
+  final bool isStatic;
 
   MethodApi({
     required this.name,
     required this.returnType,
     required this.parameters,
+    required this.isStatic,
   });
 
   factory MethodApi.fromJson(Map<String, dynamic> json) {
@@ -133,6 +135,7 @@ class MethodApi {
       parameters: (json['parameters'] as List)
           .map((p) => ParameterApi.fromJson(p))
           .toList(),
+      isStatic: json['isStatic'] ?? false,
     );
   }
 
@@ -141,6 +144,7 @@ class MethodApi {
       'name': name,
       'returnType': returnType,
       'parameters': parameters.map((p) => p.toJson()).toList(),
+      'isStatic': isStatic,
     };
   }
 }
@@ -260,6 +264,7 @@ class FieldApi {
   final bool isFinal;
   final bool isConst;
   final String? constValue;
+  final bool isStatic;
 
   FieldApi({
     required this.name,
@@ -267,6 +272,7 @@ class FieldApi {
     required this.isFinal,
     required this.isConst,
     this.constValue,
+    required this.isStatic,
   });
 
   factory FieldApi.fromJson(Map<String, dynamic> json) {
@@ -276,6 +282,7 @@ class FieldApi {
       isFinal: json['isFinal'],
       isConst: json['isConst'],
       constValue: json['constValue'],
+      isStatic: json['isStatic'] ?? false,
     );
   }
 
@@ -286,6 +293,7 @@ class FieldApi {
       'isFinal': isFinal,
       'isConst': isConst,
       'constValue': constValue,
+      'isStatic': isStatic,
     };
   }
 }
@@ -472,14 +480,14 @@ class _MemberVisitor extends GeneralizingAstVisitor<void> {
                     ?.type
                     ?.toString() ??
                 'dynamic';
-        return ParameterApi(
-            name: name, type: type, kind: kind, isRequired: p.isRequired);
+        return ParameterApi(name: name, type: type, kind: kind, isRequired: p.isRequired);
       }).toList();
 
       methods.add(MethodApi(
         name: node.name.lexeme,
         returnType: node.returnType?.toString() ?? 'dynamic',
         parameters: parameters ?? [],
+        isStatic: node.isStatic,
       ));
     }
   }
@@ -498,6 +506,7 @@ class _MemberVisitor extends GeneralizingAstVisitor<void> {
           isFinal: node.fields.isFinal,
           isConst: node.fields.isConst,
           constValue: constValue,
+          isStatic: node.isStatic,
         ));
       }
     }

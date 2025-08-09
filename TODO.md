@@ -22,4 +22,4 @@
 - [ ] Perform deep analysis of supertype hierarchies
 - [x] Add support for Mixins and Extensions
 - [x] Analyze constructors
-- [ ] Detect changes to member scope (static)
+- [x] Detect changes to member scope (static)
