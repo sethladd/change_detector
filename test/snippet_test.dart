@@ -535,6 +535,32 @@ void main() {
             contains('MAJOR: Removed constructor named from class C'));
       });
     });
+
+    group('Getter and Setter changes', () {
+      test('changing a method to a getter is a MAJOR change', () async {
+        final before = 'class C { void m() {} }';
+        final after = 'class C { int get m => 1; }';
+        final result = await diff(before, after);
+        expect(result.changeType, equals(ChangeType.major));
+        expect(result.reasons, contains('MAJOR: Method m changed kind (getter/setter)'));
+      });
+
+      test('changing a method to a setter is a MAJOR change', () async {
+        final before = 'class C { void m() {} }';
+        final after = 'class C { set m(int a) {} }';
+        final result = await diff(before, after);
+        expect(result.changeType, equals(ChangeType.major));
+        expect(result.reasons, contains('MAJOR: Method m changed kind (getter/setter)'));
+      });
+
+      test('changing a getter to a method is a MAJOR change', () async {
+        final before = 'class C { int get m => 1; }';
+        final after = 'class C { void m() {} }';
+        final result = await diff(before, after);
+        expect(result.changeType, equals(ChangeType.major));
+        expect(result.reasons, contains('MAJOR: Method m changed kind (getter/setter)'));
+      });
+    });
   });
 }
 

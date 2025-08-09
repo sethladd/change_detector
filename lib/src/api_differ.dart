@@ -622,6 +622,11 @@ class ApiDiffer {
       changeType = ChangeType.major;
     }
 
+    if (oldMethod.isGetter != newMethod.isGetter || oldMethod.isSetter != newMethod.isSetter) {
+      reasons.add('MAJOR: Method ${oldMethod.name} changed kind (getter/setter)');
+      changeType = ChangeType.major;
+    }
+
     final paramDiff = _compareParameters(oldMethod, newMethod);
     if (paramDiff.changeType == ChangeType.major) {
       changeType = ChangeType.major;

@@ -25,6 +25,7 @@
 - [x] Analyze constructors
 - [x] Detect changes to member scope (static)
 - [x] (Minor) Detect API deprecations
+- [x] (Minor) Handle getters and setters explicitly
 - [ ] (Minor) Loosen generic type constraints
   - Partially implemented (removing a bound is MINOR). Full implementation requires deep type analysis.
 - [ ] (Minor) Allow return types to change to a subtype

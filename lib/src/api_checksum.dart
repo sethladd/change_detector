@@ -123,6 +123,8 @@ class MethodApi {
   final List<ParameterApi> parameters;
   final bool isStatic;
   final bool isDeprecated;
+  final bool isGetter;
+  final bool isSetter;
 
   MethodApi({
     required this.name,
@@ -130,6 +132,8 @@ class MethodApi {
     required this.parameters,
     required this.isStatic,
     required this.isDeprecated,
+    required this.isGetter,
+    required this.isSetter,
   });
 
   factory MethodApi.fromJson(Map<String, dynamic> json) {
@@ -141,6 +145,8 @@ class MethodApi {
           .toList(),
       isStatic: json['isStatic'] ?? false,
       isDeprecated: json['isDeprecated'] ?? false,
+      isGetter: json['isGetter'] ?? false,
+      isSetter: json['isSetter'] ?? false,
     );
   }
 
@@ -151,6 +157,8 @@ class MethodApi {
       'parameters': parameters.map((p) => p.toJson()).toList(),
       'isStatic': isStatic,
       'isDeprecated': isDeprecated,
+      'isGetter': isGetter,
+      'isSetter': isSetter,
     };
   }
 }
@@ -515,8 +523,7 @@ class _MemberVisitor extends GeneralizingAstVisitor<void> {
             : p.childEntities.firstWhereOrNull((e) => e is TypeAnnotation);
         final type =
             (typeNode as TypeAnnotation?)?.type?.toString() ?? 'dynamic';
-        return ParameterApi(
-            name: name, type: type, kind: kind, isRequired: p.isRequired);
+        return ParameterApi(name: name, type: type, kind: kind, isRequired: p.isRequired);
       }).toList();
 
       methods.add(MethodApi(
@@ -525,6 +532,8 @@ class _MemberVisitor extends GeneralizingAstVisitor<void> {
         parameters: parameters ?? [],
         isStatic: node.isStatic,
         isDeprecated: node.metadata.any((m) => m.name.name == 'deprecated'),
+        isGetter: node.isGetter,
+        isSetter: node.isSetter,
       ));
     }
   }

@@ -934,8 +934,7 @@ void main() {
   });
 }
 
-Api _createApiWithMethodParams(List<ParameterApi> params,
-    {bool isStatic = false, bool isDeprecated = false}) {
+Api _createApiWithMethodParams(List<ParameterApi> params, {bool isStatic = false, bool isDeprecated = false}) {
   return _createApiWithItems(classes: [
     ClassApi(
       name: 'TestClass',
@@ -946,6 +945,8 @@ Api _createApiWithMethodParams(List<ParameterApi> params,
           parameters: params,
           isStatic: isStatic,
           isDeprecated: isDeprecated,
+          isGetter: false,
+          isSetter: false,
         )
       ],
       fields: [],
