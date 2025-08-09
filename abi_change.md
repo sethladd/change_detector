@@ -1,4 +1,4 @@
-This is an excellent and highly technical request. To build a program that detects ABI-breaking changes in a Dart library, you need a precise definition of what constitutes the Dart ABI.
+To build a program that detects ABI-breaking changes in a Dart library, you need a precise definition of what constitutes the Dart ABI.
 
 The Dart ABI (Application Binary Interface) is the low-level contract between compiled components (such as AOT snapshots or Dill/Kernel files). An ABI break occurs when a change in a library invalidates the assumptions made by previously compiled code that depends on it. This can cause linkage errors, runtime errors (like `NoSuchMethodError`), crashes, or memory corruption.
 
