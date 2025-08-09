@@ -447,7 +447,7 @@ void main() {
                 'MINOR: Removed bound from type parameter T on function f'));
       });
 
-      test('changing a bound is a MAJOR change', () async {
+      test('changing a bound to incompatible type is a MAJOR change', () async {
         final before = 'void f<T extends num>() {}';
         final after = 'void f<T extends String>() {}';
         final result = await diff(before, after);
@@ -456,6 +456,28 @@ void main() {
             result.reasons,
             contains(
                 'MAJOR: Changed bound on type parameter T on function f from num to String'));
+      });
+      
+      test('loosening a bound is a MINOR change', () async {
+        final before = 'void f<T extends int>() {}';
+        final after = 'void f<T extends num>() {}';
+        final result = await diff(before, after);
+        expect(result.changeType, equals(ChangeType.minor));
+        expect(
+            result.reasons,
+            contains(
+                'MINOR: Loosened bound on type parameter T on function f from int to num'));
+      });
+      
+      test('tightening a bound is a MAJOR change', () async {
+        final before = 'void f<T extends Object>() {}';
+        final after = 'void f<T extends num>() {}';
+        final result = await diff(before, after);
+        expect(result.changeType, equals(ChangeType.major));
+        expect(
+            result.reasons,
+            contains(
+                'MAJOR: Changed bound on type parameter T on function f from Object to num'));
       });
     });
 

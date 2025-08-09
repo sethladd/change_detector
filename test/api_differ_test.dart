@@ -775,7 +775,7 @@ void main() {
                 'MINOR: Removed bound from type parameter T on class TestClass'));
       });
 
-      test('changing a bound is a MAJOR change', () {
+      test('changing a bound to an incompatible type is a MAJOR change', () {
         final oldApi = _createApiWithClassTypeParams(
             [TypeParameterApi(name: 'T', bound: 'num')]);
         final newApi = _createApiWithClassTypeParams(
@@ -786,6 +786,32 @@ void main() {
             result.reasons,
             contains(
                 'MAJOR: Changed bound on type parameter T on class TestClass from num to String'));
+      });
+      
+      test('loosening a bound is a MINOR change', () {
+        final oldApi = _createApiWithClassTypeParams(
+            [TypeParameterApi(name: 'T', bound: 'int')]);
+        final newApi = _createApiWithClassTypeParams(
+            [TypeParameterApi(name: 'T', bound: 'num')]);
+        final result = differ.compare(oldApi, newApi);
+        expect(result.changeType, equals(ChangeType.minor));
+        expect(
+            result.reasons,
+            contains(
+                'MINOR: Loosened bound on type parameter T on class TestClass from int to num'));
+      });
+      
+      test('tightening a bound is a MAJOR change', () {
+        final oldApi = _createApiWithClassTypeParams(
+            [TypeParameterApi(name: 'T', bound: 'Object')]);
+        final newApi = _createApiWithClassTypeParams(
+            [TypeParameterApi(name: 'T', bound: 'num')]);
+        final result = differ.compare(oldApi, newApi);
+        expect(result.changeType, equals(ChangeType.major));
+        expect(
+            result.reasons,
+            contains(
+                'MAJOR: Changed bound on type parameter T on class TestClass from Object to num'));
       });
     });
 
@@ -853,7 +879,7 @@ void main() {
                 'MINOR: Removed bound from type parameter T on function testFunction'));
       });
 
-      test('changing a bound is a MAJOR change', () {
+      test('changing a bound to an incompatible type is a MAJOR change', () {
         final oldApi = _createApiWithFunctionTypeParams(
             [TypeParameterApi(name: 'T', bound: 'num')]);
         final newApi = _createApiWithFunctionTypeParams(
@@ -864,6 +890,32 @@ void main() {
             result.reasons,
             contains(
                 'MAJOR: Changed bound on type parameter T on function testFunction from num to String'));
+      });
+      
+      test('loosening a bound is a MINOR change', () {
+        final oldApi = _createApiWithFunctionTypeParams(
+            [TypeParameterApi(name: 'T', bound: 'int')]);
+        final newApi = _createApiWithFunctionTypeParams(
+            [TypeParameterApi(name: 'T', bound: 'num')]);
+        final result = differ.compare(oldApi, newApi);
+        expect(result.changeType, equals(ChangeType.minor));
+        expect(
+            result.reasons,
+            contains(
+                'MINOR: Loosened bound on type parameter T on function testFunction from int to num'));
+      });
+      
+      test('tightening a bound is a MAJOR change', () {
+        final oldApi = _createApiWithFunctionTypeParams(
+            [TypeParameterApi(name: 'T', bound: 'Object')]);
+        final newApi = _createApiWithFunctionTypeParams(
+            [TypeParameterApi(name: 'T', bound: 'num')]);
+        final result = differ.compare(oldApi, newApi);
+        expect(result.changeType, equals(ChangeType.major));
+        expect(
+            result.reasons,
+            contains(
+                'MAJOR: Changed bound on type parameter T on function testFunction from Object to num'));
       });
     });
 

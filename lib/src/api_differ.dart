@@ -582,11 +582,19 @@ class ApiDiffer {
             changeType = ChangeType.minor;
           }
         } else {
-          // For now, any change to a bound is considered major.
-          // A more sophisticated check would involve checking for sub/supertypes.
-          reasons.add(
-              'MAJOR: Changed bound on type parameter ${oldParam.name} on $context from ${oldParam.bound} to ${newParam.bound}');
-          changeType = ChangeType.major;
+          // Check if the new bound is a supertype of the old bound, which means it's less restrictive
+          if (_isSubtypeOf(oldParam.bound!, newParam.bound!)) {
+            reasons.add(
+                'MINOR: Loosened bound on type parameter ${oldParam.name} on $context from ${oldParam.bound} to ${newParam.bound}');
+            if (changeType == ChangeType.none) {
+              changeType = ChangeType.minor;
+            }
+          } else {
+            // The bound was tightened or changed to an incompatible type
+            reasons.add(
+                'MAJOR: Changed bound on type parameter ${oldParam.name} on $context from ${oldParam.bound} to ${newParam.bound}');
+            changeType = ChangeType.major;
+          }
         }
       }
     }

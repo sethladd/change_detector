@@ -26,7 +26,7 @@
 - [x] Detect changes to member scope (static)
 - [x] (Minor) Detect API deprecations
 - [x] (Minor) Handle getters and setters explicitly
-- [ ] (Minor) Loosen generic type constraints
-  - Partially implemented (removing a bound is MINOR). Full implementation requires deep type analysis.
+- [x] (Minor) Loosen generic type constraints
+  - Fully implemented. Removing a bound is MINOR and changing to a less restrictive bound (supertype) is also MINOR.
 - [ ] (Minor) Allow return types to change to a subtype
   - Requires deep type analysis to check for subtype relationships. Currently, any change is treated as MAJOR.
