@@ -75,6 +75,74 @@ class ApiDiffer {
     }
     reasons.addAll(enumDiff.reasons);
 
+    final mixinDiff = _compareMixins(oldApi, newApi);
+    if (mixinDiff.changeType == ChangeType.major) {
+      changeType = ChangeType.major;
+    } else if (mixinDiff.changeType == ChangeType.minor && changeType == ChangeType.none) {
+      changeType = ChangeType.minor;
+    }
+    reasons.addAll(mixinDiff.reasons);
+
+    final extensionDiff = _compareExtensions(oldApi, newApi);
+    if (extensionDiff.changeType == ChangeType.major) {
+      changeType = ChangeType.major;
+    } else if (extensionDiff.changeType == ChangeType.minor && changeType == ChangeType.none) {
+      changeType = ChangeType.minor;
+    }
+    reasons.addAll(extensionDiff.reasons);
+
+    return DiffResult(changeType, reasons);
+  }
+
+  DiffResult _compareMixins(Api oldApi, Api newApi) {
+    final reasons = <String>[];
+    var changeType = ChangeType.none;
+
+    final oldMixins = { for (var m in oldApi.mixins) m.name: m };
+    final newMixins = { for (var m in newApi.mixins) m.name: m };
+
+    for (final oldMixin in oldApi.mixins) {
+      if (!newMixins.containsKey(oldMixin.name)) {
+        reasons.add('MAJOR: Removed mixin ${oldMixin.name}');
+        changeType = ChangeType.major;
+      }
+    }
+
+    for (final newMixin in newApi.mixins) {
+      if (!oldMixins.containsKey(newMixin.name)) {
+        reasons.add('MINOR: Added mixin ${newMixin.name}');
+        if (changeType == ChangeType.none) {
+          changeType = ChangeType.minor;
+        }
+      }
+    }
+
+    return DiffResult(changeType, reasons);
+  }
+
+  DiffResult _compareExtensions(Api oldApi, Api newApi) {
+    final reasons = <String>[];
+    var changeType = ChangeType.none;
+
+    final oldExtensions = { for (var e in oldApi.extensions) e.name: e };
+    final newExtensions = { for (var e in newApi.extensions) e.name: e };
+
+    for (final oldExtension in oldApi.extensions) {
+      if (!newExtensions.containsKey(oldExtension.name)) {
+        reasons.add('MAJOR: Removed extension ${oldExtension.name}');
+        changeType = ChangeType.major;
+      }
+    }
+
+    for (final newExtension in newApi.extensions) {
+      if (!oldExtensions.containsKey(newExtension.name)) {
+        reasons.add('MINOR: Added extension ${newExtension.name}');
+        if (changeType == ChangeType.none) {
+          changeType = ChangeType.minor;
+        }
+      }
+    }
+
     return DiffResult(changeType, reasons);
   }
 

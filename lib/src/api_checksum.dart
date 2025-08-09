@@ -8,25 +8,38 @@ class Api {
   final List<FunctionApi> functions;
   final List<VariableApi> variables;
   final List<EnumApi> enums;
+  final List<MixinApi> mixins;
+  final List<ExtensionApi> extensions;
 
   Api({
     required this.classes,
     required this.functions,
     required this.variables,
     required this.enums,
+    required this.mixins,
+    required this.extensions,
   });
 
   factory Api.fromJson(Map<String, dynamic> json) {
     return Api(
-      classes:
-          (json['classes'] as List).map((c) => ClassApi.fromJson(c)).toList(),
+      classes: (json['classes'] as List)
+          .map((c) => ClassApi.fromJson(c))
+          .toList(),
       functions: (json['functions'] as List)
           .map((f) => FunctionApi.fromJson(f))
           .toList(),
       variables: (json['variables'] as List)
           .map((v) => VariableApi.fromJson(v))
           .toList(),
-      enums: (json['enums'] as List).map((e) => EnumApi.fromJson(e)).toList(),
+      enums: (json['enums'] as List)
+          .map((e) => EnumApi.fromJson(e))
+          .toList(),
+      mixins: (json['mixins'] as List? ?? [])
+          .map((m) => MixinApi.fromJson(m))
+          .toList(),
+      extensions: (json['extensions'] as List? ?? [])
+          .map((e) => ExtensionApi.fromJson(e))
+          .toList(),
     );
   }
 
@@ -36,6 +49,8 @@ class Api {
       'functions': functions.map((f) => f.toJson()).toList(),
       'variables': variables.map((v) => v.toJson()).toList(),
       'enums': enums.map((e) => e.toJson()).toList(),
+      'mixins': mixins.map((m) => m.toJson()).toList(),
+      'extensions': extensions.map((e) => e.toJson()).toList(),
     };
   }
 }
@@ -280,6 +295,8 @@ class _ApiVisitor extends GeneralizingAstVisitor<void> {
   final List<FunctionApi> _functions = [];
   final List<VariableApi> _variables = [];
   final List<EnumApi> _enums = [];
+  final List<MixinApi> _mixins = [];
+  final List<ExtensionApi> _extensions = [];
   Api? api;
 
   @override
@@ -290,6 +307,8 @@ class _ApiVisitor extends GeneralizingAstVisitor<void> {
       functions: _functions,
       variables: _variables,
       enums: _enums,
+      mixins: _mixins,
+      extensions: _extensions,
     );
   }
 
@@ -386,6 +405,22 @@ class _ApiVisitor extends GeneralizingAstVisitor<void> {
     }
     super.visitEnumDeclaration(node);
   }
+
+  @override
+  void visitMixinDeclaration(MixinDeclaration node) {
+    if (!node.name.lexeme.startsWith('_')) {
+      _mixins.add(MixinApi(name: node.name.lexeme));
+    }
+    super.visitMixinDeclaration(node);
+  }
+
+  @override
+  void visitExtensionDeclaration(ExtensionDeclaration node) {
+    if (node.name?.lexeme != null && !node.name!.lexeme.startsWith('_')) {
+      _extensions.add(ExtensionApi(name: node.name!.lexeme));
+    }
+    super.visitExtensionDeclaration(node);
+  }
 }
 
 class _MemberVisitor extends GeneralizingAstVisitor<void> {
@@ -475,5 +510,33 @@ class EnumApi {
       'name': name,
       'values': values,
     };
+  }
+}
+
+class MixinApi {
+  final String name;
+
+  MixinApi({required this.name});
+
+  factory MixinApi.fromJson(Map<String, dynamic> json) {
+    return MixinApi(name: json['name']);
+  }
+
+  Map<String, dynamic> toJson() {
+    return {'name': name};
+  }
+}
+
+class ExtensionApi {
+  final String name;
+
+  ExtensionApi({required this.name});
+
+  factory ExtensionApi.fromJson(Map<String, dynamic> json) {
+    return ExtensionApi(name: json['name']);
+  }
+
+  Map<String, dynamic> toJson() {
+    return {'name': name};
   }
 }

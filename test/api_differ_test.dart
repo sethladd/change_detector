@@ -442,6 +442,40 @@ void main() {
       });
     });
 
+    group('Mixin and Extension changes', () {
+      test('adding a mixin is a MINOR change', () {
+        final oldApi = _createApiWithItems();
+        final newApi = _createApiWithItems(mixins: [MixinApi(name: 'TestMixin')]);
+        final result = differ.compare(oldApi, newApi);
+        expect(result.changeType, equals(ChangeType.minor));
+        expect(result.reasons, contains('MINOR: Added mixin TestMixin'));
+      });
+
+      test('removing a mixin is a MAJOR change', () {
+        final oldApi = _createApiWithItems(mixins: [MixinApi(name: 'TestMixin')]);
+        final newApi = _createApiWithItems();
+        final result = differ.compare(oldApi, newApi);
+        expect(result.changeType, equals(ChangeType.major));
+        expect(result.reasons, contains('MAJOR: Removed mixin TestMixin'));
+      });
+
+      test('adding an extension is a MINOR change', () {
+        final oldApi = _createApiWithItems();
+        final newApi = _createApiWithItems(extensions: [ExtensionApi(name: 'TestExtension')]);
+        final result = differ.compare(oldApi, newApi);
+        expect(result.changeType, equals(ChangeType.minor));
+        expect(result.reasons, contains('MINOR: Added extension TestExtension'));
+      });
+
+      test('removing an extension is a MAJOR change', () {
+        final oldApi = _createApiWithItems(extensions: [ExtensionApi(name: 'TestExtension')]);
+        final newApi = _createApiWithItems();
+        final result = differ.compare(oldApi, newApi);
+        expect(result.changeType, equals(ChangeType.major));
+        expect(result.reasons, contains('MAJOR: Removed extension TestExtension'));
+      });
+    });
+
     group('Generic type parameter changes on classes', () {
       test('adding a type parameter is a MAJOR change', () {
         final oldApi = _createApiWithClassTypeParams([]);
@@ -681,12 +715,16 @@ Api _createApiWithItems({
   List<FunctionApi> functions = const [],
   List<VariableApi> variables = const [],
   List<EnumApi> enums = const [],
+  List<MixinApi> mixins = const [],
+  List<ExtensionApi> extensions = const [],
 }) {
   return Api(
     classes: classes,
     functions: functions,
     variables: variables,
     enums: enums,
+    mixins: mixins,
+    extensions: extensions,
   );
 }
 

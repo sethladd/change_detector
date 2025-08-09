@@ -20,6 +20,6 @@
 - [x] Detect changes to `const` variable values
 - [x] Detect adding `abstract` keyword to classes
 - [ ] Perform deep analysis of supertype hierarchies
-- [ ] Add support for Mixins and Extensions
+- [x] Add support for Mixins and Extensions
 - [ ] Analyze constructors
 - [ ] Detect changes to member scope (static)
