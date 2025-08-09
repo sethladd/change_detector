@@ -542,7 +542,8 @@ void main() {
         final after = 'class C { int get m => 1; }';
         final result = await diff(before, after);
         expect(result.changeType, equals(ChangeType.major));
-        expect(result.reasons, contains('MAJOR: Method m changed kind (getter/setter)'));
+        expect(result.reasons,
+            contains('MAJOR: Method m changed kind (getter/setter)'));
       });
 
       test('changing a method to a setter is a MAJOR change', () async {
@@ -550,7 +551,8 @@ void main() {
         final after = 'class C { set m(int a) {} }';
         final result = await diff(before, after);
         expect(result.changeType, equals(ChangeType.major));
-        expect(result.reasons, contains('MAJOR: Method m changed kind (getter/setter)'));
+        expect(result.reasons,
+            contains('MAJOR: Method m changed kind (getter/setter)'));
       });
 
       test('changing a getter to a method is a MAJOR change', () async {
@@ -558,7 +560,8 @@ void main() {
         final after = 'class C { void m() {} }';
         final result = await diff(before, after);
         expect(result.changeType, equals(ChangeType.major));
-        expect(result.reasons, contains('MAJOR: Method m changed kind (getter/setter)'));
+        expect(result.reasons,
+            contains('MAJOR: Method m changed kind (getter/setter)'));
       });
     });
   });
