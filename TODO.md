@@ -18,7 +18,7 @@
 - [x] Analyze generic type parameters
 - [x] Add tests for generic type parameter changes
 - [x] Detect changes to `const` variable values
-- [ ] Detect adding `abstract` keyword to classes
+- [x] Detect adding `abstract` keyword to classes
 - [ ] Perform deep analysis of supertype hierarchies
 - [ ] Add support for Mixins and Extensions
 - [ ] Analyze constructors

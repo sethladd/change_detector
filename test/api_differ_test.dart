@@ -431,6 +431,15 @@ void main() {
         expect(result.reasons,
             contains('MAJOR: Mixins of class TestClass changed'));
       });
+
+      test('making a class abstract is a MAJOR change', () {
+        final oldApi = _createApiWithClassHierarchy(isAbstract: false);
+        final newApi = _createApiWithClassHierarchy(isAbstract: true);
+        final result = differ.compare(oldApi, newApi);
+        expect(result.changeType, equals(ChangeType.major));
+        expect(result.reasons,
+            contains('MAJOR: Class TestClass was made abstract'));
+      });
     });
 
     group('Generic type parameter changes on classes', () {
@@ -662,6 +671,7 @@ Api _createApiWithMethodParams(List<ParameterApi> params) {
       interfaces: [],
       mixins: [],
       typeParameters: [],
+      isAbstract: false,
     )
   ]);
 }
@@ -689,6 +699,7 @@ Api _createApiWithClassAndFields(List<FieldApi> fields) {
       interfaces: [],
       mixins: [],
       typeParameters: [],
+      isAbstract: false,
     )
   ]);
 }
@@ -703,6 +714,7 @@ Api _createApiWithClassHierarchy({
   String? superclass,
   List<String> interfaces = const [],
   List<String> mixins = const [],
+  bool isAbstract = false,
 }) {
   return _createApiWithItems(classes: [
     ClassApi(
@@ -713,6 +725,7 @@ Api _createApiWithClassHierarchy({
       interfaces: interfaces,
       mixins: mixins,
       typeParameters: [],
+      isAbstract: isAbstract,
     )
   ]);
 }
@@ -727,6 +740,7 @@ Api _createApiWithClassTypeParams(List<TypeParameterApi> typeParams) {
       interfaces: [],
       mixins: [],
       typeParameters: typeParams,
+      isAbstract: false,
     )
   ]);
 }

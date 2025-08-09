@@ -140,6 +140,11 @@ class ApiDiffer {
       changeType = ChangeType.major;
     }
 
+    if (!oldClass.isAbstract && newClass.isAbstract) {
+      reasons.add('MAJOR: Class ${oldClass.name} was made abstract');
+      changeType = ChangeType.major;
+    }
+
     final typeParameterDiff = _compareTypeParameters(
       oldClass.typeParameters,
       newClass.typeParameters,

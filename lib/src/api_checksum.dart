@@ -47,6 +47,7 @@ class ClassApi {
   final String? superclass;
   final List<String> interfaces;
   final List<String> mixins;
+  final bool isAbstract;
   final List<TypeParameterApi> typeParameters;
 
   ClassApi({
@@ -56,6 +57,7 @@ class ClassApi {
     this.superclass,
     required this.interfaces,
     required this.mixins,
+    required this.isAbstract,
     required this.typeParameters,
   });
 
@@ -69,6 +71,7 @@ class ClassApi {
       superclass: json['superclass'],
       interfaces: (json['interfaces'] as List).cast<String>(),
       mixins: (json['mixins'] as List).cast<String>(),
+      isAbstract: json['isAbstract'] ?? false,
       typeParameters: (json['typeParameters'] as List? ?? [])
           .map((p) => TypeParameterApi.fromJson(p))
           .toList(),
@@ -83,6 +86,7 @@ class ClassApi {
       'superclass': superclass,
       'interfaces': interfaces,
       'mixins': mixins,
+      'isAbstract': isAbstract,
       'typeParameters': typeParameters.map((p) => p.toJson()).toList(),
     };
   }
@@ -305,6 +309,7 @@ class _ApiVisitor extends GeneralizingAstVisitor<void> {
             [],
         mixins:
             node.withClause?.mixinTypes.map((t) => t.toString()).toList() ?? [],
+        isAbstract: node.abstractKeyword != null,
         typeParameters: node.typeParameters?.typeParameters
                 .map((p) => TypeParameterApi(
                       name: p.name.lexeme,
