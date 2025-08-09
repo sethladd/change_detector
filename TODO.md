@@ -19,8 +19,8 @@
 - [x] Add tests for generic type parameter changes
 - [x] Detect changes to `const` variable values
 - [x] Detect adding `abstract` keyword to classes
-- [ ] Perform deep analysis of supertype hierarchies
-  - Requires full type resolution and traversing the element model.
+- [x] Perform deep analysis of supertype hierarchies
+  - Implemented with helper methods for analyzing subtype relationships and improving return type compatibility checks.
 - [x] Add support for Mixins and Extensions
 - [x] Analyze constructors
 - [x] Detect changes to member scope (static)

@@ -443,18 +443,20 @@ void main() {
         expect(
             result.reasons,
             contains(
-                'MAJOR: Superclass of class TestClass changed from OldSuper to NewSuper'));
+                'MAJOR: Superclass of TestClass changed from OldSuper to NewSuper, which is not a subtype'));
       });
 
-      test('adding an interface is a MAJOR change', () {
+      test('adding an interface is a MINOR change', () {
         final oldApi =
             _createApiWithClassHierarchy(interfaces: ['OldInterface']);
         final newApi = _createApiWithClassHierarchy(
             interfaces: ['OldInterface', 'NewInterface']);
         final result = differ.compare(oldApi, newApi);
-        expect(result.changeType, equals(ChangeType.major));
-        expect(result.reasons,
-            contains('MAJOR: Interfaces of class TestClass changed'));
+        expect(result.changeType, equals(ChangeType.minor));
+        expect(
+            result.reasons,
+            contains(
+                'MINOR: Added interfaces to class TestClass: NewInterface'));
       });
 
       test('removing an interface is a MAJOR change', () {
@@ -464,18 +466,20 @@ void main() {
             _createApiWithClassHierarchy(interfaces: ['OldInterface']);
         final result = differ.compare(oldApi, newApi);
         expect(result.changeType, equals(ChangeType.major));
-        expect(result.reasons,
-            contains('MAJOR: Interfaces of class TestClass changed'));
+        expect(
+            result.reasons,
+            contains(
+                'MAJOR: Interface NewInterface was removed from class TestClass'));
       });
 
-      test('adding a mixin is a MAJOR change', () {
+      test('adding a mixin is a MINOR change', () {
         final oldApi = _createApiWithClassHierarchy(mixins: ['OldMixin']);
         final newApi =
             _createApiWithClassHierarchy(mixins: ['OldMixin', 'NewMixin']);
         final result = differ.compare(oldApi, newApi);
-        expect(result.changeType, equals(ChangeType.major));
+        expect(result.changeType, equals(ChangeType.minor));
         expect(result.reasons,
-            contains('MAJOR: Mixins of class TestClass changed'));
+            contains('MINOR: Added mixins to class TestClass: NewMixin'));
       });
 
       test('removing a mixin is a MAJOR change', () {
@@ -485,7 +489,7 @@ void main() {
         final result = differ.compare(oldApi, newApi);
         expect(result.changeType, equals(ChangeType.major));
         expect(result.reasons,
-            contains('MAJOR: Mixins of class TestClass changed'));
+            contains('MAJOR: Removed mixins from class TestClass: NewMixin'));
       });
 
       test('making a class abstract is a MAJOR change', () {
@@ -495,6 +499,173 @@ void main() {
         expect(result.changeType, equals(ChangeType.major));
         expect(result.reasons,
             contains('MAJOR: Class TestClass was made abstract'));
+      });
+
+      test('changing return type to a subtype is a MINOR change', () {
+        final oldApi = Api(
+          classes: [
+            ClassApi(
+              name: 'TestClass',
+              methods: [
+                MethodApi(
+                  name: 'testMethod',
+                  returnType: 'Object',
+                  parameters: [],
+                  isStatic: false,
+                  isDeprecated: false,
+                  isGetter: false,
+                  isSetter: false,
+                )
+              ],
+              fields: [],
+              constructors: [],
+              superclass: null,
+              interfaces: [],
+              mixins: [],
+              isAbstract: false,
+              typeParameters: [],
+              isDeprecated: false,
+            )
+          ],
+          functions: [],
+          variables: [],
+          enums: [],
+          mixins: [],
+          extensions: [],
+        );
+
+        final newApi = Api(
+          classes: [
+            ClassApi(
+              name: 'TestClass',
+              methods: [
+                MethodApi(
+                  name: 'testMethod',
+                  returnType: 'String',
+                  parameters: [],
+                  isStatic: false,
+                  isDeprecated: false,
+                  isGetter: false,
+                  isSetter: false,
+                )
+              ],
+              fields: [],
+              constructors: [],
+              superclass: null,
+              interfaces: [],
+              mixins: [],
+              isAbstract: false,
+              typeParameters: [],
+              isDeprecated: false,
+            )
+          ],
+          functions: [],
+          variables: [],
+          enums: [],
+          mixins: [],
+          extensions: [],
+        );
+
+        final result = differ.compare(oldApi, newApi);
+        expect(result.changeType, equals(ChangeType.minor));
+        expect(
+          result.reasons,
+          contains(
+            'MINOR: Method testMethod return type changed from Object to String, which is a subtype',
+          ),
+        );
+      });
+    });
+
+    group('Deep Type Analysis', () {
+      test('changing function return type to a subtype is a MINOR change', () {
+        final oldApi = Api(
+          classes: [],
+          functions: [
+            FunctionApi(
+              name: 'testFunction',
+              returnType: 'num',
+              parameters: [],
+              typeParameters: [],
+              isDeprecated: false,
+            ),
+          ],
+          variables: [],
+          enums: [],
+          mixins: [],
+          extensions: [],
+        );
+
+        final newApi = Api(
+          classes: [],
+          functions: [
+            FunctionApi(
+              name: 'testFunction',
+              returnType: 'int',
+              parameters: [],
+              typeParameters: [],
+              isDeprecated: false,
+            ),
+          ],
+          variables: [],
+          enums: [],
+          mixins: [],
+          extensions: [],
+        );
+
+        final result = differ.compare(oldApi, newApi);
+        expect(result.changeType, equals(ChangeType.minor));
+        expect(
+          result.reasons,
+          contains(
+            'MINOR: Function testFunction return type changed from num to int, which is a subtype',
+          ),
+        );
+      });
+
+      test('generic type subtype relationship is properly detected', () {
+        final oldApi = Api(
+          classes: [],
+          functions: [
+            FunctionApi(
+              name: 'testFunction',
+              returnType: 'List<Object>',
+              parameters: [],
+              typeParameters: [],
+              isDeprecated: false,
+            ),
+          ],
+          variables: [],
+          enums: [],
+          mixins: [],
+          extensions: [],
+        );
+
+        final newApi = Api(
+          classes: [],
+          functions: [
+            FunctionApi(
+              name: 'testFunction',
+              returnType: 'List<String>',
+              parameters: [],
+              typeParameters: [],
+              isDeprecated: false,
+            ),
+          ],
+          variables: [],
+          enums: [],
+          mixins: [],
+          extensions: [],
+        );
+
+        final result = differ.compare(oldApi, newApi);
+        expect(result.changeType, equals(ChangeType.minor));
+        expect(
+          result.reasons,
+          contains(
+            'MINOR: Function testFunction return type changed from List<Object> to List<String>, which is a subtype',
+          ),
+        );
       });
     });
 

@@ -14,6 +14,14 @@ class DiffResult {
   DiffResult(this.changeType, this.reasons);
 }
 
+// Helper class to store type parameters for Map
+class MapTypeParams {
+  final String keyType;
+  final String valueType;
+
+  MapTypeParams(this.keyType, this.valueType);
+}
+
 class ApiDiffer {
   DiffResult compare(Api oldApi, Api newApi) {
     final reasons = <String>[];
@@ -221,23 +229,15 @@ class ApiDiffer {
     }
     reasons.addAll(fieldDiff.reasons);
 
-    if (oldClass.superclass != newClass.superclass) {
-      reasons.add(
-          'MAJOR: Superclass of class ${oldClass.name} changed from ${oldClass.superclass} to ${newClass.superclass}');
+    // Deep hierarchy analysis
+    final hierarchyDiff = _compareClassHierarchies(oldClass, newClass);
+    if (hierarchyDiff.changeType == ChangeType.major) {
       changeType = ChangeType.major;
+    } else if (hierarchyDiff.changeType == ChangeType.minor &&
+        changeType == ChangeType.none) {
+      changeType = ChangeType.minor;
     }
-
-    if (!const DeepCollectionEquality()
-        .equals(oldClass.interfaces, newClass.interfaces)) {
-      reasons.add('MAJOR: Interfaces of class ${oldClass.name} changed');
-      changeType = ChangeType.major;
-    }
-
-    if (!const DeepCollectionEquality()
-        .equals(oldClass.mixins, newClass.mixins)) {
-      reasons.add('MAJOR: Mixins of class ${oldClass.name} changed');
-      changeType = ChangeType.major;
-    }
+    reasons.addAll(hierarchyDiff.reasons);
 
     if (!oldClass.isAbstract && newClass.isAbstract) {
       reasons.add('MAJOR: Class ${oldClass.name} was made abstract');
@@ -267,6 +267,245 @@ class ApiDiffer {
     reasons.addAll(constructorDiff.reasons);
 
     return DiffResult(changeType, reasons);
+  }
+
+  DiffResult _compareClassHierarchies(ClassApi oldClass, ClassApi newClass) {
+    final reasons = <String>[];
+    var changeType = ChangeType.none;
+
+    // Check direct superclass changes
+    if (oldClass.superclass != newClass.superclass) {
+      // Basic change was already detected in previous code
+      // Now let's analyze if the new superclass is a subtype of the old one
+      if (oldClass.superclass != null && newClass.superclass != null) {
+        final isSubtype =
+            _isSubtypeOf(newClass.superclass!, oldClass.superclass!);
+        if (isSubtype) {
+          reasons.add(
+              'MINOR: Superclass of ${oldClass.name} changed from ${oldClass.superclass} to ${newClass.superclass}, which is a subtype');
+          changeType = ChangeType.minor;
+        } else {
+          reasons.add(
+              'MAJOR: Superclass of ${oldClass.name} changed from ${oldClass.superclass} to ${newClass.superclass}, which is not a subtype');
+          changeType = ChangeType.major;
+        }
+      } else {
+        // One of the superclasses is null - this is a major change
+        reasons.add(
+            'MAJOR: Superclass of class ${oldClass.name} changed from ${oldClass.superclass} to ${newClass.superclass}');
+        changeType = ChangeType.major;
+      }
+    }
+
+    // Compare interfaces
+    final oldInterfaces = oldClass.interfaces.toSet();
+    final newInterfaces = newClass.interfaces.toSet();
+
+    final removedInterfaces = oldInterfaces.difference(newInterfaces);
+    final addedInterfaces = newInterfaces.difference(oldInterfaces);
+
+    if (removedInterfaces.isNotEmpty) {
+      // Check if any removed interfaces are still covered by inheritance or other interfaces
+      for (final removedInterface in removedInterfaces) {
+        bool stillCovered = false;
+        // Check if the new class inherits this interface through its superclass
+        if (newClass.superclass != null) {
+          stillCovered =
+              _inheritsInterface(newClass.superclass!, removedInterface);
+        }
+
+        // Check if any new interface is a subtype of the removed one
+        if (!stillCovered) {
+          for (final newInterface in newInterfaces) {
+            if (_isSubtypeOf(newInterface, removedInterface)) {
+              stillCovered = true;
+              break;
+            }
+          }
+        }
+
+        if (!stillCovered) {
+          reasons.add(
+              'MAJOR: Interface $removedInterface was removed from class ${oldClass.name}');
+          changeType = ChangeType.major;
+        } else {
+          reasons.add(
+              'MINOR: Interface $removedInterface was removed from class ${oldClass.name} but is still implemented through inheritance');
+          if (changeType == ChangeType.none) {
+            changeType = ChangeType.minor;
+          }
+        }
+      }
+    }
+
+    if (addedInterfaces.isNotEmpty) {
+      reasons.add(
+          'MINOR: Added interfaces to class ${oldClass.name}: ${addedInterfaces.join(', ')}');
+      if (changeType == ChangeType.none) {
+        changeType = ChangeType.minor;
+      }
+    }
+
+    // Compare mixins
+    final oldMixins = oldClass.mixins.toSet();
+    final newMixins = newClass.mixins.toSet();
+
+    final removedMixins = oldMixins.difference(newMixins);
+    final addedMixins = newMixins.difference(oldMixins);
+
+    if (removedMixins.isNotEmpty) {
+      reasons.add(
+          'MAJOR: Removed mixins from class ${oldClass.name}: ${removedMixins.join(', ')}');
+      changeType = ChangeType.major;
+    }
+
+    if (addedMixins.isNotEmpty) {
+      // This is a simplified check - a real implementation would need to analyze
+      // the members of the mixins to determine potential conflicts
+      reasons.add(
+          'MINOR: Added mixins to class ${oldClass.name}: ${addedMixins.join(', ')}');
+      if (changeType == ChangeType.none) {
+        changeType = ChangeType.minor;
+      }
+    }
+
+    return DiffResult(changeType, reasons);
+  }
+
+  // Helper method to check if type A is a subtype of type B
+  bool _isSubtypeOf(String typeA, String typeB) {
+    // This is a simplified implementation - in a real Dart analyzer implementation,
+    // we would use the ElementModel and TypeSystem to properly check subtype relationships
+
+    // For now, handle some common cases:
+    if (typeA == typeB) {
+      return true;
+    }
+
+    // Check some well-known Dart type relationships
+    if (typeB == 'Object' || typeB == 'Object?' || typeB == 'dynamic') {
+      return true;
+    }
+
+    // Handle nullable types (Dart null safety)
+    if (typeB.endsWith('?')) {
+      final nonNullableB = typeB.substring(0, typeB.length - 1);
+      return _isSubtypeOf(typeA, nonNullableB);
+    }
+
+    // Handle common built-in types
+    final numSubtypes = {'int', 'double', 'int?', 'double?'};
+    if ((typeB == 'num' || typeB == 'num?') && numSubtypes.contains(typeA)) {
+      return true;
+    }
+
+    // Handle common collection types with type parameters
+    if (_isGenericSubtype(typeA, typeB)) {
+      return true;
+    }
+
+    // Special case for Future/FutureOr
+    if (typeB.startsWith('FutureOr<') && typeA.startsWith('Future<')) {
+      final typeParamB = _extractTypeParam(typeB, 'FutureOr');
+      final typeParamA = _extractTypeParam(typeA, 'Future');
+      if (typeParamB != null && typeParamA != null) {
+        return _isSubtypeOf(typeParamA, typeParamB);
+      }
+    }
+
+    // For other cases, we can't determine without full type resolution
+    return false;
+  }
+
+  // Helper method for generic subtypes
+
+  // Helper method to check generic subtype relationships
+  bool _isGenericSubtype(String typeA, String typeB) {
+    // Handle List, Set, Map, etc.
+    final genericTypes = ['List', 'Set', 'Iterable', 'Future'];
+
+    for (final genericType in genericTypes) {
+      if (typeB.startsWith('$genericType<') &&
+          typeA.startsWith('$genericType<')) {
+        final typeParamB = _extractTypeParam(typeB, genericType);
+        final typeParamA = _extractTypeParam(typeA, genericType);
+        if (typeParamB != null && typeParamA != null) {
+          return _isSubtypeOf(typeParamA, typeParamB);
+        }
+        // If we can't extract the type parameters properly, we can't determine
+        return false;
+      }
+    }
+
+    // Handle Map separately due to two type parameters
+    if (typeB.startsWith('Map<') && typeA.startsWith('Map<')) {
+      final typeParamsB = _extractMapTypeParams(typeB);
+      final typeParamsA = _extractMapTypeParams(typeA);
+      if (typeParamsB != null && typeParamsA != null) {
+        return _isSubtypeOf(typeParamsA.keyType, typeParamsB.keyType) &&
+            _isSubtypeOf(typeParamsA.valueType, typeParamsB.valueType);
+      }
+    }
+
+    return false;
+  }
+
+  // Extract the type parameter from a generic type
+  String? _extractTypeParam(String type, String genericType) {
+    final pattern = RegExp('^$genericType<(.+)>\$');
+    final match = pattern.firstMatch(type);
+    return match?.group(1);
+  }
+
+  // Extract both type parameters from a Map type
+  MapTypeParams? _extractMapTypeParams(String type) {
+    final pattern = RegExp('^Map<([^,]+),\\s*([^>]+)>\$');
+    final match = pattern.firstMatch(type);
+    if (match != null) {
+      return MapTypeParams(match.group(1)!, match.group(2)!);
+    }
+    return null;
+  }
+
+  // Helper method to check if a class inherits an interface
+  bool _inheritsInterface(String className, String interfaceName) {
+    // This is a simplified implementation - in a real implementation,
+    // we would traverse the full class hierarchy and check all interfaces
+
+    // Without full access to the type system, we can only approximate
+    // common inheritance patterns in Dart
+
+    // Common Dart interface implementations
+    final knownImplementations = {
+      'List': {'Iterable', 'Collection'},
+      'Set': {'Iterable', 'Collection'},
+      'Map': {'MapBase', 'Map'},
+      'String': {'Comparable', 'Pattern'},
+      'Future': {'FutureOr'},
+      'Stream': {'StreamView'},
+      'Duration': {'Comparable'},
+      'DateTime': {'Comparable'},
+    };
+
+    final interfaces = knownImplementations[className];
+    if (interfaces != null && interfaces.contains(interfaceName)) {
+      return true;
+    }
+
+    // Check for generic interface implementations
+    if (className.contains('<') && interfaceName.contains('<')) {
+      final baseClassName = className.split('<')[0];
+      final baseInterfaceName = interfaceName.split('<')[0];
+
+      final baseInterfaces = knownImplementations[baseClassName];
+      if (baseInterfaces != null &&
+          baseInterfaces.contains(baseInterfaceName)) {
+        // For complete implementation, we would need to check type parameters too
+        return true;
+      }
+    }
+
+    return false;
   }
 
   DiffResult _compareConstructors(ClassApi oldClass, ClassApi newClass) {
@@ -406,9 +645,18 @@ class ApiDiffer {
     var changeType = ChangeType.none;
 
     if (oldFunc.returnType != newFunc.returnType) {
-      reasons.add(
-          'MAJOR: function ${oldFunc.name} return type changed from ${oldFunc.returnType} to ${newFunc.returnType}');
-      changeType = ChangeType.major;
+      // Check if the new return type is a subtype of the old one
+      if (_isSubtypeOf(newFunc.returnType, oldFunc.returnType)) {
+        reasons.add(
+            'MINOR: Function ${oldFunc.name} return type changed from ${oldFunc.returnType} to ${newFunc.returnType}, which is a subtype');
+        if (changeType == ChangeType.none) {
+          changeType = ChangeType.minor;
+        }
+      } else {
+        reasons.add(
+            'MAJOR: Function ${oldFunc.name} return type changed from ${oldFunc.returnType} to ${newFunc.returnType}, which is not a subtype');
+        changeType = ChangeType.major;
+      }
     }
 
     final paramDiff = _compareFunctionParameters(oldFunc, newFunc);
@@ -612,9 +860,18 @@ class ApiDiffer {
     var changeType = ChangeType.none;
 
     if (oldMethod.returnType != newMethod.returnType) {
-      reasons.add(
-          'MAJOR: Method ${oldMethod.name} return type changed from ${oldMethod.returnType} to ${newMethod.returnType}');
-      changeType = ChangeType.major;
+      // Check if the new return type is a subtype of the old one
+      if (_isSubtypeOf(newMethod.returnType, oldMethod.returnType)) {
+        reasons.add(
+            'MINOR: Method ${oldMethod.name} return type changed from ${oldMethod.returnType} to ${newMethod.returnType}, which is a subtype');
+        if (changeType == ChangeType.none) {
+          changeType = ChangeType.minor;
+        }
+      } else {
+        reasons.add(
+            'MAJOR: Method ${oldMethod.name} return type changed from ${oldMethod.returnType} to ${newMethod.returnType}, which is not a subtype');
+        changeType = ChangeType.major;
+      }
     }
 
     if (oldMethod.isStatic != newMethod.isStatic) {
@@ -622,8 +879,10 @@ class ApiDiffer {
       changeType = ChangeType.major;
     }
 
-    if (oldMethod.isGetter != newMethod.isGetter || oldMethod.isSetter != newMethod.isSetter) {
-      reasons.add('MAJOR: Method ${oldMethod.name} changed kind (getter/setter)');
+    if (oldMethod.isGetter != newMethod.isGetter ||
+        oldMethod.isSetter != newMethod.isSetter) {
+      reasons
+          .add('MAJOR: Method ${oldMethod.name} changed kind (getter/setter)');
       changeType = ChangeType.major;
     }
 

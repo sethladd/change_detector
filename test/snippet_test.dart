@@ -285,17 +285,19 @@ void main() {
         final after = 'class C {} class B extends C {}';
         final result = await diff(before, after);
         expect(result.changeType, equals(ChangeType.major));
-        expect(result.reasons,
-            contains('MAJOR: Superclass of class B changed from A to C'));
+        expect(
+            result.reasons,
+            contains(
+                'MAJOR: Superclass of B changed from A to C, which is not a subtype'));
       });
 
-      test('adding an interface is a MAJOR change', () async {
+      test('adding an interface is a MINOR change', () async {
         final before = 'class A {} class B implements A {}';
         final after = 'class A {} class C {} class B implements A, C {}';
         final result = await diff(before, after);
-        expect(result.changeType, equals(ChangeType.major));
+        expect(result.changeType, equals(ChangeType.minor));
         expect(
-            result.reasons, contains('MAJOR: Interfaces of class B changed'));
+            result.reasons, contains('MINOR: Added interfaces to class B: C'));
       });
 
       test('removing an interface is a MAJOR change', () async {
@@ -303,16 +305,16 @@ void main() {
         final after = 'class A {} class B implements A {}';
         final result = await diff(before, after);
         expect(result.changeType, equals(ChangeType.major));
-        expect(
-            result.reasons, contains('MAJOR: Interfaces of class B changed'));
+        expect(result.reasons,
+            contains('MAJOR: Interface C was removed from class B'));
       });
 
-      test('adding a mixin is a MAJOR change', () async {
+      test('adding a mixin is a MINOR change', () async {
         final before = 'mixin M {} class C with M {}';
         final after = 'mixin M {} mixin N {} class C with M, N {}';
         final result = await diff(before, after);
-        expect(result.changeType, equals(ChangeType.major));
-        expect(result.reasons, contains('MAJOR: Mixins of class C changed'));
+        expect(result.changeType, equals(ChangeType.minor));
+        expect(result.reasons, contains('MINOR: Added mixins to class C: N'));
       });
 
       test('removing a mixin is a MAJOR change', () async {
@@ -320,7 +322,8 @@ void main() {
         final after = 'mixin M {} class C with M {}';
         final result = await diff(before, after);
         expect(result.changeType, equals(ChangeType.major));
-        expect(result.reasons, contains('MAJOR: Mixins of class C changed'));
+        expect(
+            result.reasons, contains('MAJOR: Removed mixins from class C: N'));
       });
 
       test('making a class abstract is a MAJOR change', () async {
