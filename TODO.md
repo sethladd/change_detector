@@ -1,0 +1,25 @@
+# TODO
+
+- [x] Bootstrap the command-line app
+- [x] Implement API Checksum Generation
+- [x] Implement `checksum` command
+- [x] Implement API Comparison Logic
+- [x] Implement `compare` command
+- [x] Detect changes to method parameters
+- [x] Add tests for parameter changes
+- [x] Handle top-level functions and variables
+- [x] Add tests for top-level declaration changes
+- [x] Detect changes to fields
+- [x] Add tests for field changes
+- [x] Handle enums
+- [x] Add tests for enum changes
+- [x] Analyze class and mixin hierarchies
+- [x] Add tests for class hierarchy changes
+- [x] Analyze generic type parameters
+- [x] Add tests for generic type parameter changes
+- [x] Detect changes to `const` variable values
+- [ ] Detect adding `abstract` keyword to classes
+- [ ] Perform deep analysis of supertype hierarchies
+- [ ] Add support for Mixins and Extensions
+- [ ] Analyze constructors
+- [ ] Detect changes to member scope (static)

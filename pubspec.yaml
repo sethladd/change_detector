@@ -1,7 +1,6 @@
 name: change_detector
-description: A simple command-line application created by Gemini.
+description: Detects if a Dart library needs a major or minor version bump.
 # version: 1.0.0
-# homepage: https://www.example.com
 
 environment:
   sdk: '>=2.12.0 <3.0.0'
@@ -11,7 +10,8 @@ environment:
 
 dev_dependencies:
   lints: ^2.0.0
+  test: ^1.24.9
 dependencies:
-  analyzer: ^8.1.0
+  analyzer: 8.1.0
   args: ^2.7.0
   path: ^1.9.1

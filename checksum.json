@@ -1,45 +1,62 @@
 {
-  "Awesome": {
-    "interfaces": [],
-    "kind": "class",
-    "members": {
-      "constructor:new": {
-        "abstract": false,
-        "const": false,
-        "factory": false,
-        "kind": "constructor",
-        "parameters": [],
-        "returnType": "Awesome",
-        "static": false,
-        "typeParameters": []
-      },
-      "getter:name": {
-        "abstract": false,
-        "kind": "getter",
-        "parameters": [],
-        "returnType": "String",
-        "static": false,
-        "typeParameters": []
-      }
-    },
-    "mixins": [],
-    "modifiers": [],
-    "supertype": null,
-    "typeParameters": []
-  },
-  "doCoolStuff": {
-    "abstract": false,
-    "kind": "function",
-    "parameters": [
-      {
-        "name": "name",
-        "type": "String",
-        "kind": "RP",
-        "hasDefault": false
-      }
-    ],
-    "returnType": "void",
-    "static": true,
-    "typeParameters": []
-  }
+  "classes": [
+    {
+      "name": "MyTestClass",
+      "methods": [
+        {
+          "name": "anotherTest",
+          "returnType": "int",
+          "parameters": [
+            {
+              "name": "count",
+              "type": "int",
+              "kind": "positional",
+              "isRequired": true
+            }
+          ]
+        },
+        {
+          "name": "newMethod",
+          "returnType": "void",
+          "parameters": []
+        },
+        {
+          "name": "removedParam",
+          "returnType": "void",
+          "parameters": [
+            {
+              "name": "old",
+              "type": "String",
+              "kind": "positional",
+              "isRequired": true
+            }
+          ]
+        },
+        {
+          "name": "optionalToRequired",
+          "returnType": "void",
+          "parameters": [
+            {
+              "name": "value",
+              "type": "dynamic",
+              "kind": "named",
+              "isRequired": false
+            }
+          ]
+        },
+        {
+          "name": "typeChange",
+          "returnType": "void",
+          "parameters": [
+            {
+              "name": "value",
+              "type": "int",
+              "kind": "positional",
+              "isRequired": true
+            }
+          ]
+        }
+      ]
+    }
+  ]
 }
