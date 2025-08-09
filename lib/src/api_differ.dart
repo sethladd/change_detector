@@ -84,7 +84,8 @@ class ApiDiffer {
     final mixinDiff = _compareMixins(oldApi, newApi);
     if (mixinDiff.changeType == ChangeType.major) {
       changeType = ChangeType.major;
-    } else if (mixinDiff.changeType == ChangeType.minor && changeType == ChangeType.none) {
+    } else if (mixinDiff.changeType == ChangeType.minor &&
+        changeType == ChangeType.none) {
       changeType = ChangeType.minor;
     }
     reasons.addAll(mixinDiff.reasons);
@@ -92,7 +93,8 @@ class ApiDiffer {
     final extensionDiff = _compareExtensions(oldApi, newApi);
     if (extensionDiff.changeType == ChangeType.major) {
       changeType = ChangeType.major;
-    } else if (extensionDiff.changeType == ChangeType.minor && changeType == ChangeType.none) {
+    } else if (extensionDiff.changeType == ChangeType.minor &&
+        changeType == ChangeType.none) {
       changeType = ChangeType.minor;
     }
     reasons.addAll(extensionDiff.reasons);
@@ -104,8 +106,8 @@ class ApiDiffer {
     final reasons = <String>[];
     var changeType = ChangeType.none;
 
-    final oldMixins = { for (var m in oldApi.mixins) m.name: m };
-    final newMixins = { for (var m in newApi.mixins) m.name: m };
+    final oldMixins = {for (var m in oldApi.mixins) m.name: m};
+    final newMixins = {for (var m in newApi.mixins) m.name: m};
 
     for (final oldMixin in oldApi.mixins) {
       final newMixin = newMixins[oldMixin.name];
@@ -138,8 +140,8 @@ class ApiDiffer {
     final reasons = <String>[];
     var changeType = ChangeType.none;
 
-    final oldExtensions = { for (var e in oldApi.extensions) e.name: e };
-    final newExtensions = { for (var e in newApi.extensions) e.name: e };
+    final oldExtensions = {for (var e in oldApi.extensions) e.name: e};
+    final newExtensions = {for (var e in newApi.extensions) e.name: e};
 
     for (final oldExtension in oldApi.extensions) {
       final newExtension = newExtensions[oldExtension.name];
@@ -148,7 +150,8 @@ class ApiDiffer {
         changeType = ChangeType.major;
       } else {
         if (!oldExtension.isDeprecated && newExtension.isDeprecated) {
-          reasons.add('MINOR: Extension ${oldExtension.name} is now deprecated');
+          reasons
+              .add('MINOR: Extension ${oldExtension.name} is now deprecated');
           if (changeType == ChangeType.none) {
             changeType = ChangeType.minor;
           }
@@ -257,7 +260,8 @@ class ApiDiffer {
     final constructorDiff = _compareConstructors(oldClass, newClass);
     if (constructorDiff.changeType == ChangeType.major) {
       changeType = ChangeType.major;
-    } else if (constructorDiff.changeType == ChangeType.minor && changeType == ChangeType.none) {
+    } else if (constructorDiff.changeType == ChangeType.minor &&
+        changeType == ChangeType.none) {
       changeType = ChangeType.minor;
     }
     reasons.addAll(constructorDiff.reasons);
@@ -269,17 +273,19 @@ class ApiDiffer {
     final reasons = <String>[];
     var changeType = ChangeType.none;
 
-    final oldConstructors = { for (var c in oldClass.constructors) c.name: c };
-    final newConstructors = { for (var c in newClass.constructors) c.name: c };
+    final oldConstructors = {for (var c in oldClass.constructors) c.name: c};
+    final newConstructors = {for (var c in newClass.constructors) c.name: c};
 
     for (final oldConstructor in oldClass.constructors) {
       final newConstructor = newConstructors[oldConstructor.name];
       if (newConstructor == null) {
-        reasons.add('MAJOR: Removed constructor ${oldConstructor.name} from class ${oldClass.name}');
+        reasons.add(
+            'MAJOR: Removed constructor ${oldConstructor.name} from class ${oldClass.name}');
         changeType = ChangeType.major;
       } else {
         if (!oldConstructor.isDeprecated && newConstructor.isDeprecated) {
-          reasons.add('MINOR: Constructor ${oldConstructor.name} is now deprecated');
+          reasons.add(
+              'MINOR: Constructor ${oldConstructor.name} is now deprecated');
           if (changeType == ChangeType.none) {
             changeType = ChangeType.minor;
           }
@@ -289,7 +295,8 @@ class ApiDiffer {
 
     for (final newConstructor in newClass.constructors) {
       if (!oldConstructors.containsKey(newConstructor.name)) {
-        reasons.add('MINOR: Added constructor ${newConstructor.name} to class ${oldClass.name}');
+        reasons.add(
+            'MINOR: Added constructor ${newConstructor.name} to class ${oldClass.name}');
         if (changeType == ChangeType.none) {
           changeType = ChangeType.minor;
         }
@@ -504,7 +511,8 @@ class ApiDiffer {
         changeType = ChangeType.major;
       } else {
         if (!oldField.isDeprecated && newField.isDeprecated) {
-          reasons.add('MINOR: Field ${oldField.name} in class ${oldClass.name} is now deprecated');
+          reasons.add(
+              'MINOR: Field ${oldField.name} in class ${oldClass.name} is now deprecated');
           if (changeType == ChangeType.none) {
             changeType = ChangeType.minor;
           }
@@ -527,7 +535,8 @@ class ApiDiffer {
           changeType = ChangeType.major;
         }
         if (oldField.isStatic != newField.isStatic) {
-          reasons.add('MAJOR: Field ${oldField.name} in class ${oldClass.name} changed static scope');
+          reasons.add(
+              'MAJOR: Field ${oldField.name} in class ${oldClass.name} changed static scope');
           changeType = ChangeType.major;
         }
       }
@@ -737,15 +746,7 @@ class ApiDiffer {
         continue;
       }
 
-      if (oldParam.kind != newParam.kind) {
-        reasons.add(
-            'MAJOR: Parameter ${oldParam.name} in method ${oldMethod.name} changed kind from ${oldParam.kind.name} to ${newParam.kind.name}');
-        changeType = ChangeType.major;
-      } else if (oldParam.type != newParam.type) {
-        reasons.add(
-            'MAJOR: Parameter ${oldParam.name} in method ${oldMethod.name} changed type from ${oldParam.type} to ${newParam.type}');
-        changeType = ChangeType.major;
-      } else if (!oldParam.isRequired && newParam.isRequired) {
+      if (!oldParam.isRequired && newParam.isRequired) {
         reasons.add(
             'MAJOR: Parameter ${oldParam.name} in method ${oldMethod.name} changed from optional to required');
         changeType = ChangeType.major;
@@ -755,6 +756,14 @@ class ApiDiffer {
         if (changeType == ChangeType.none) {
           changeType = ChangeType.minor;
         }
+      } else if (oldParam.kind != newParam.kind) {
+        reasons.add(
+            'MAJOR: Parameter ${oldParam.name} in method ${oldMethod.name} changed kind from ${oldParam.kind.name} to ${newParam.kind.name}');
+        changeType = ChangeType.major;
+      } else if (oldParam.type != newParam.type) {
+        reasons.add(
+            'MAJOR: Parameter ${oldParam.name} in method ${oldMethod.name} changed type from ${oldParam.type} to ${newParam.type}');
+        changeType = ChangeType.major;
       }
     }
 

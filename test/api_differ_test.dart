@@ -161,7 +161,14 @@ void main() {
       test('adding a function is a MINOR change', () {
         final oldApi = _createApiWithItems();
         final newApi = _createApiWithItems(
-          functions: [FunctionApi(name: 'testFunction', returnType: 'void', parameters: [], typeParameters: [], isDeprecated: false)],
+          functions: [
+            FunctionApi(
+                name: 'testFunction',
+                returnType: 'void',
+                parameters: [],
+                typeParameters: [],
+                isDeprecated: false)
+          ],
         );
         final result = differ.compare(oldApi, newApi);
         expect(result.changeType, equals(ChangeType.minor));
@@ -170,7 +177,14 @@ void main() {
 
       test('removing a function is a MAJOR change', () {
         final oldApi = _createApiWithItems(
-          functions: [FunctionApi(name: 'testFunction', returnType: 'void', parameters: [], typeParameters: [], isDeprecated: false)],
+          functions: [
+            FunctionApi(
+                name: 'testFunction',
+                returnType: 'void',
+                parameters: [],
+                typeParameters: [],
+                isDeprecated: false)
+          ],
         );
         final newApi = _createApiWithItems();
         final result = differ.compare(oldApi, newApi);
@@ -182,7 +196,14 @@ void main() {
       test('adding a variable is a MINOR change', () {
         final oldApi = _createApiWithItems();
         final newApi = _createApiWithItems(
-          variables: [VariableApi(name: 'testVar', type: 'int', isFinal: false, isConst: false, isDeprecated: false)],
+          variables: [
+            VariableApi(
+                name: 'testVar',
+                type: 'int',
+                isFinal: false,
+                isConst: false,
+                isDeprecated: false)
+          ],
         );
         final result = differ.compare(oldApi, newApi);
         expect(result.changeType, equals(ChangeType.minor));
@@ -191,7 +212,14 @@ void main() {
 
       test('removing a variable is a MAJOR change', () {
         final oldApi = _createApiWithItems(
-          variables: [VariableApi(name: 'testVar', type: 'int', isFinal: false, isConst: false, isDeprecated: false)],
+          variables: [
+            VariableApi(
+                name: 'testVar',
+                type: 'int',
+                isFinal: false,
+                isConst: false,
+                isDeprecated: false)
+          ],
         );
         final newApi = _createApiWithItems();
         final result = differ.compare(oldApi, newApi);
@@ -201,10 +229,24 @@ void main() {
 
       test('changing a variable type is a MAJOR change', () {
         final oldApi = _createApiWithItems(
-          variables: [VariableApi(name: 'testVar', type: 'int', isFinal: false, isConst: false, isDeprecated: false)],
+          variables: [
+            VariableApi(
+                name: 'testVar',
+                type: 'int',
+                isFinal: false,
+                isConst: false,
+                isDeprecated: false)
+          ],
         );
         final newApi = _createApiWithItems(
-          variables: [VariableApi(name: 'testVar', type: 'String', isFinal: false, isConst: false, isDeprecated: false)],
+          variables: [
+            VariableApi(
+                name: 'testVar',
+                type: 'String',
+                isFinal: false,
+                isConst: false,
+                isDeprecated: false)
+          ],
         );
         final result = differ.compare(oldApi, newApi);
         expect(result.changeType, equals(ChangeType.major));
@@ -216,10 +258,24 @@ void main() {
 
       test('changing a variable to final is a MAJOR change', () {
         final oldApi = _createApiWithItems(
-          variables: [VariableApi(name: 'testVar', type: 'int', isFinal: false, isConst: false, isDeprecated: false)],
+          variables: [
+            VariableApi(
+                name: 'testVar',
+                type: 'int',
+                isFinal: false,
+                isConst: false,
+                isDeprecated: false)
+          ],
         );
         final newApi = _createApiWithItems(
-          variables: [VariableApi(name: 'testVar', type: 'int', isFinal: true, isConst: false, isDeprecated: false)],
+          variables: [
+            VariableApi(
+                name: 'testVar',
+                type: 'int',
+                isFinal: true,
+                isConst: false,
+                isDeprecated: false)
+          ],
         );
         final result = differ.compare(oldApi, newApi);
         expect(result.changeType, equals(ChangeType.major));
@@ -232,59 +288,107 @@ void main() {
       test('adding a field is a MINOR change', () {
         final oldApi = _createApiWithClassAndFields([]);
         final newApi = _createApiWithClassAndFields([
-          FieldApi(name: 'testField', type: 'int', isFinal: false, isConst: false, isStatic: false, isDeprecated: false)
+          FieldApi(
+              name: 'testField',
+              type: 'int',
+              isFinal: false,
+              isConst: false,
+              isStatic: false,
+              isDeprecated: false)
         ]);
         final result = differ.compare(oldApi, newApi);
         expect(result.changeType, equals(ChangeType.minor));
-        expect(result.reasons, contains('MINOR: Added field testField to class TestClass'));
+        expect(result.reasons,
+            contains('MINOR: Added field testField to class TestClass'));
       });
 
       test('removing a field is a MAJOR change', () {
         final oldApi = _createApiWithClassAndFields([
-          FieldApi(name: 'testField', type: 'int', isFinal: false, isConst: false, isStatic: false, isDeprecated: false)
+          FieldApi(
+              name: 'testField',
+              type: 'int',
+              isFinal: false,
+              isConst: false,
+              isStatic: false,
+              isDeprecated: false)
         ]);
         final newApi = _createApiWithClassAndFields([]);
         final result = differ.compare(oldApi, newApi);
         expect(result.changeType, equals(ChangeType.major));
-        expect(result.reasons, contains('MAJOR: Removed field testField from class TestClass'));
+        expect(result.reasons,
+            contains('MAJOR: Removed field testField from class TestClass'));
       });
 
       test('changing a field type is a MAJOR change', () {
         final oldApi = _createApiWithClassAndFields([
-          FieldApi(name: 'testField', type: 'int', isFinal: false, isConst: false, isStatic: false, isDeprecated: false)
+          FieldApi(
+              name: 'testField',
+              type: 'int',
+              isFinal: false,
+              isConst: false,
+              isStatic: false,
+              isDeprecated: false)
         ]);
         final newApi = _createApiWithClassAndFields([
-          FieldApi(name: 'testField', type: 'String', isFinal: false, isConst: false, isStatic: false, isDeprecated: false)
+          FieldApi(
+              name: 'testField',
+              type: 'String',
+              isFinal: false,
+              isConst: false,
+              isStatic: false,
+              isDeprecated: false)
         ]);
         final result = differ.compare(oldApi, newApi);
         expect(result.changeType, equals(ChangeType.major));
-        expect(result.reasons, contains('MAJOR: Field testField in class TestClass changed type from int to String'));
+        expect(
+            result.reasons,
+            contains(
+                'MAJOR: Field testField in class TestClass changed type from int to String'));
       });
 
       test('changing a field to final is a MAJOR change', () {
         final oldApi = _createApiWithClassAndFields([
-          FieldApi(name: 'testField', type: 'int', isFinal: false, isConst: false, isStatic: false, isDeprecated: false)
+          FieldApi(
+              name: 'testField',
+              type: 'int',
+              isFinal: false,
+              isConst: false,
+              isStatic: false,
+              isDeprecated: false)
         ]);
         final newApi = _createApiWithClassAndFields([
-          FieldApi(name: 'testField', type: 'int', isFinal: true, isConst: false, isStatic: false, isDeprecated: false)
+          FieldApi(
+              name: 'testField',
+              type: 'int',
+              isFinal: true,
+              isConst: false,
+              isStatic: false,
+              isDeprecated: false)
         ]);
         final result = differ.compare(oldApi, newApi);
         expect(result.changeType, equals(ChangeType.major));
-        expect(result.reasons, contains('MAJOR: Field testField in class TestClass was changed to final'));
+        expect(
+            result.reasons,
+            contains(
+                'MAJOR: Field testField in class TestClass was changed to final'));
       });
     });
 
     group('Enum changes', () {
       test('adding an enum is a MINOR change', () {
         final oldApi = _createApiWithItems();
-        final newApi = _createApiWithItems(enums: [EnumApi(name: 'TestEnum', values: ['a'], isDeprecated: false)]);
+        final newApi = _createApiWithItems(enums: [
+          EnumApi(name: 'TestEnum', values: ['a'], isDeprecated: false)
+        ]);
         final result = differ.compare(oldApi, newApi);
         expect(result.changeType, equals(ChangeType.minor));
         expect(result.reasons, contains('MINOR: Added enum TestEnum'));
       });
 
       test('removing an enum is a MAJOR change', () {
-        final oldApi = _createApiWithItems(enums: [EnumApi(name: 'TestEnum', values: ['a'], isDeprecated: false)]);
+        final oldApi = _createApiWithItems(enums: [
+          EnumApi(name: 'TestEnum', values: ['a'], isDeprecated: false)
+        ]);
         final newApi = _createApiWithItems();
         final result = differ.compare(oldApi, newApi);
         expect(result.changeType, equals(ChangeType.major));
@@ -397,16 +501,16 @@ void main() {
     group('Mixin and Extension changes', () {
       test('adding a mixin is a MINOR change', () {
         final oldApi = _createApiWithItems();
-        final newApi =
-            _createApiWithItems(mixins: [MixinApi(name: 'TestMixin', isDeprecated: false)]);
+        final newApi = _createApiWithItems(
+            mixins: [MixinApi(name: 'TestMixin', isDeprecated: false)]);
         final result = differ.compare(oldApi, newApi);
         expect(result.changeType, equals(ChangeType.minor));
         expect(result.reasons, contains('MINOR: Added mixin TestMixin'));
       });
 
       test('removing a mixin is a MAJOR change', () {
-        final oldApi =
-            _createApiWithItems(mixins: [MixinApi(name: 'TestMixin', isDeprecated: false)]);
+        final oldApi = _createApiWithItems(
+            mixins: [MixinApi(name: 'TestMixin', isDeprecated: false)]);
         final newApi = _createApiWithItems();
         final result = differ.compare(oldApi, newApi);
         expect(result.changeType, equals(ChangeType.major));
@@ -415,8 +519,9 @@ void main() {
 
       test('adding an extension is a MINOR change', () {
         final oldApi = _createApiWithItems();
-        final newApi = _createApiWithItems(
-            extensions: [ExtensionApi(name: 'TestExtension', isDeprecated: false)]);
+        final newApi = _createApiWithItems(extensions: [
+          ExtensionApi(name: 'TestExtension', isDeprecated: false)
+        ]);
         final result = differ.compare(oldApi, newApi);
         expect(result.changeType, equals(ChangeType.minor));
         expect(
@@ -424,8 +529,9 @@ void main() {
       });
 
       test('removing an extension is a MAJOR change', () {
-        final oldApi = _createApiWithItems(
-            extensions: [ExtensionApi(name: 'TestExtension', isDeprecated: false)]);
+        final oldApi = _createApiWithItems(extensions: [
+          ExtensionApi(name: 'TestExtension', isDeprecated: false)
+        ]);
         final newApi = _createApiWithItems();
         final result = differ.compare(oldApi, newApi);
         expect(result.changeType, equals(ChangeType.major));
@@ -593,10 +699,26 @@ void main() {
     group('Const value changes', () {
       test('changing a const variable value is a MAJOR change', () {
         final oldApi = _createApiWithItems(
-          variables: [VariableApi(name: 'testVar', type: 'int', isFinal: false, isConst: true, constValue: '1', isDeprecated: false)],
+          variables: [
+            VariableApi(
+                name: 'testVar',
+                type: 'int',
+                isFinal: false,
+                isConst: true,
+                constValue: '1',
+                isDeprecated: false)
+          ],
         );
         final newApi = _createApiWithItems(
-          variables: [VariableApi(name: 'testVar', type: 'int', isFinal: false, isConst: true, constValue: '2', isDeprecated: false)],
+          variables: [
+            VariableApi(
+                name: 'testVar',
+                type: 'int',
+                isFinal: false,
+                isConst: true,
+                constValue: '2',
+                isDeprecated: false)
+          ],
         );
         final result = differ.compare(oldApi, newApi);
         expect(result.changeType, equals(ChangeType.major));
@@ -608,14 +730,31 @@ void main() {
 
       test('changing a const field value is a MAJOR change', () {
         final oldApi = _createApiWithClassAndFields([
-          FieldApi(name: 'testField', type: 'int', isFinal: false, isConst: true, constValue: '1', isStatic: false, isDeprecated: false)
+          FieldApi(
+              name: 'testField',
+              type: 'int',
+              isFinal: false,
+              isConst: true,
+              constValue: '1',
+              isStatic: false,
+              isDeprecated: false)
         ]);
         final newApi = _createApiWithClassAndFields([
-          FieldApi(name: 'testField', type: 'int', isFinal: false, isConst: true, constValue: '2', isStatic: false, isDeprecated: false)
+          FieldApi(
+              name: 'testField',
+              type: 'int',
+              isFinal: false,
+              isConst: true,
+              constValue: '2',
+              isStatic: false,
+              isDeprecated: false)
         ]);
         final result = differ.compare(oldApi, newApi);
         expect(result.changeType, equals(ChangeType.major));
-        expect(result.reasons, contains('MAJOR: Const field testField in class TestClass changed value from 1 to 2'));
+        expect(
+            result.reasons,
+            contains(
+                'MAJOR: Const field testField in class TestClass changed value from 1 to 2'));
       });
     });
 
@@ -625,7 +764,8 @@ void main() {
         final newApi = _createApiWithClassHierarchy(isDeprecated: true);
         final result = differ.compare(oldApi, newApi);
         expect(result.changeType, equals(ChangeType.minor));
-        expect(result.reasons, contains('MINOR: Class TestClass is now deprecated'));
+        expect(result.reasons,
+            contains('MINOR: Class TestClass is now deprecated'));
       });
 
       test('deprecating a method is a MINOR change', () {
@@ -633,31 +773,58 @@ void main() {
         final newApi = _createApiWithMethodParams([], isDeprecated: true);
         final result = differ.compare(oldApi, newApi);
         expect(result.changeType, equals(ChangeType.minor));
-        expect(result.reasons, contains('MINOR: Method testMethod is now deprecated'));
+        expect(result.reasons,
+            contains('MINOR: Method testMethod is now deprecated'));
       });
 
       test('deprecating a field is a MINOR change', () {
         final oldApi = _createApiWithClassAndFields([
-          FieldApi(name: 'testField', type: 'int', isFinal: false, isConst: false, isStatic: false, isDeprecated: false)
+          FieldApi(
+              name: 'testField',
+              type: 'int',
+              isFinal: false,
+              isConst: false,
+              isStatic: false,
+              isDeprecated: false)
         ]);
         final newApi = _createApiWithClassAndFields([
-          FieldApi(name: 'testField', type: 'int', isFinal: false, isConst: false, isStatic: false, isDeprecated: true)
+          FieldApi(
+              name: 'testField',
+              type: 'int',
+              isFinal: false,
+              isConst: false,
+              isStatic: false,
+              isDeprecated: true)
         ]);
         final result = differ.compare(oldApi, newApi);
         expect(result.changeType, equals(ChangeType.minor));
-        expect(result.reasons, contains('MINOR: Field testField in class TestClass is now deprecated'));
+        expect(
+            result.reasons,
+            contains(
+                'MINOR: Field testField in class TestClass is now deprecated'));
       });
 
       test('deprecating a function is a MINOR change', () {
         final oldApi = _createApiWithItems(functions: [
-          FunctionApi(name: 'testFunction', returnType: 'void', parameters: [], typeParameters: [], isDeprecated: false)
+          FunctionApi(
+              name: 'testFunction',
+              returnType: 'void',
+              parameters: [],
+              typeParameters: [],
+              isDeprecated: false)
         ]);
         final newApi = _createApiWithItems(functions: [
-          FunctionApi(name: 'testFunction', returnType: 'void', parameters: [], typeParameters: [], isDeprecated: true)
+          FunctionApi(
+              name: 'testFunction',
+              returnType: 'void',
+              parameters: [],
+              typeParameters: [],
+              isDeprecated: true)
         ]);
         final result = differ.compare(oldApi, newApi);
         expect(result.changeType, equals(ChangeType.minor));
-        expect(result.reasons, contains('MINOR: Function testFunction is now deprecated'));
+        expect(result.reasons,
+            contains('MINOR: Function testFunction is now deprecated'));
       });
     });
 
@@ -667,7 +834,8 @@ void main() {
         final newApi = _createApiWithMethodParams([], isStatic: true);
         final result = differ.compare(oldApi, newApi);
         expect(result.changeType, equals(ChangeType.major));
-        expect(result.reasons, contains('MAJOR: Method testMethod changed static scope'));
+        expect(result.reasons,
+            contains('MAJOR: Method testMethod changed static scope'));
       });
 
       test('changing a method from static is a MAJOR change', () {
@@ -675,31 +843,62 @@ void main() {
         final newApi = _createApiWithMethodParams([], isStatic: false);
         final result = differ.compare(oldApi, newApi);
         expect(result.changeType, equals(ChangeType.major));
-        expect(result.reasons, contains('MAJOR: Method testMethod changed static scope'));
+        expect(result.reasons,
+            contains('MAJOR: Method testMethod changed static scope'));
       });
 
       test('changing a field to static is a MAJOR change', () {
         final oldApi = _createApiWithClassAndFields([
-          FieldApi(name: 'testField', type: 'int', isFinal: false, isConst: false, isStatic: false, isDeprecated: false)
+          FieldApi(
+              name: 'testField',
+              type: 'int',
+              isFinal: false,
+              isConst: false,
+              isStatic: false,
+              isDeprecated: false)
         ]);
         final newApi = _createApiWithClassAndFields([
-          FieldApi(name: 'testField', type: 'int', isFinal: false, isConst: false, isStatic: true, isDeprecated: false)
+          FieldApi(
+              name: 'testField',
+              type: 'int',
+              isFinal: false,
+              isConst: false,
+              isStatic: true,
+              isDeprecated: false)
         ]);
         final result = differ.compare(oldApi, newApi);
         expect(result.changeType, equals(ChangeType.major));
-        expect(result.reasons, contains('MAJOR: Field testField in class TestClass changed static scope'));
+        expect(
+            result.reasons,
+            contains(
+                'MAJOR: Field testField in class TestClass changed static scope'));
       });
 
       test('changing a field from static is a MAJOR change', () {
         final oldApi = _createApiWithClassAndFields([
-          FieldApi(name: 'testField', type: 'int', isFinal: false, isConst: false, isStatic: true, isDeprecated: false)
+          FieldApi(
+              name: 'testField',
+              type: 'int',
+              isFinal: false,
+              isConst: false,
+              isStatic: true,
+              isDeprecated: false)
         ]);
         final newApi = _createApiWithClassAndFields([
-          FieldApi(name: 'testField', type: 'int', isFinal: false, isConst: false, isStatic: false, isDeprecated: false)
+          FieldApi(
+              name: 'testField',
+              type: 'int',
+              isFinal: false,
+              isConst: false,
+              isStatic: false,
+              isDeprecated: false)
         ]);
         final result = differ.compare(oldApi, newApi);
         expect(result.changeType, equals(ChangeType.major));
-        expect(result.reasons, contains('MAJOR: Field testField in class TestClass changed static scope'));
+        expect(
+            result.reasons,
+            contains(
+                'MAJOR: Field testField in class TestClass changed static scope'));
       });
     });
 
@@ -707,7 +906,8 @@ void main() {
       test('adding a constructor is a MINOR change', () {
         final oldApi = _createApiWithConstructors([]);
         final newApi = _createApiWithConstructors([
-          ConstructorApi(name: 'TestConstructor', parameters: [], isDeprecated: false)
+          ConstructorApi(
+              name: 'TestConstructor', parameters: [], isDeprecated: false)
         ]);
         final result = differ.compare(oldApi, newApi);
         expect(result.changeType, equals(ChangeType.minor));
@@ -719,7 +919,8 @@ void main() {
 
       test('removing a constructor is a MAJOR change', () {
         final oldApi = _createApiWithConstructors([
-          ConstructorApi(name: 'TestConstructor', parameters: [], isDeprecated: false)
+          ConstructorApi(
+              name: 'TestConstructor', parameters: [], isDeprecated: false)
         ]);
         final newApi = _createApiWithConstructors([]);
         final result = differ.compare(oldApi, newApi);
@@ -733,7 +934,8 @@ void main() {
   });
 }
 
-Api _createApiWithMethodParams(List<ParameterApi> params, {bool isStatic = false, bool isDeprecated = false}) {
+Api _createApiWithMethodParams(List<ParameterApi> params,
+    {bool isStatic = false, bool isDeprecated = false}) {
   return _createApiWithItems(classes: [
     ClassApi(
       name: 'TestClass',

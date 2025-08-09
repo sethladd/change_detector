@@ -22,18 +22,15 @@ class Api {
 
   factory Api.fromJson(Map<String, dynamic> json) {
     return Api(
-      classes: (json['classes'] as List)
-          .map((c) => ClassApi.fromJson(c))
-          .toList(),
+      classes:
+          (json['classes'] as List).map((c) => ClassApi.fromJson(c)).toList(),
       functions: (json['functions'] as List)
           .map((f) => FunctionApi.fromJson(f))
           .toList(),
       variables: (json['variables'] as List)
           .map((v) => VariableApi.fromJson(v))
           .toList(),
-      enums: (json['enums'] as List)
-          .map((e) => EnumApi.fromJson(e))
-          .toList(),
+      enums: (json['enums'] as List).map((e) => EnumApi.fromJson(e)).toList(),
       mixins: (json['mixins'] as List? ?? [])
           .map((m) => MixinApi.fromJson(m))
           .toList(),
@@ -83,12 +80,10 @@ class ClassApi {
   factory ClassApi.fromJson(Map<String, dynamic> json) {
     return ClassApi(
       name: json['name'],
-      methods: (json['methods'] as List)
-          .map((m) => MethodApi.fromJson(m))
-          .toList(),
-      fields: (json['fields'] as List)
-          .map((f) => FieldApi.fromJson(f))
-          .toList(),
+      methods:
+          (json['methods'] as List).map((m) => MethodApi.fromJson(m)).toList(),
+      fields:
+          (json['fields'] as List).map((f) => FieldApi.fromJson(f)).toList(),
       constructors: (json['constructors'] as List? ?? [])
           .map((c) => ConstructorApi.fromJson(c))
           .toList(),
@@ -97,7 +92,10 @@ class ClassApi {
       mixins: (json['mixins'] as List).cast<String>(),
       isAbstract: json['isAbstract'] ?? false,
       typeParameters: (json['typeParameters'] as List? ?? [])
-          .map((p) => TypeParameterApi.fromJson(p))
+          .map((p) => TypeParameterApi(
+                name: p.name.lexeme,
+                bound: p.bound?.toString(),
+              ))
           .toList(),
       isDeprecated: json['isDeprecated'] ?? false,
     );
@@ -217,7 +215,10 @@ class FunctionApi {
           .map((p) => ParameterApi.fromJson(p))
           .toList(),
       typeParameters: (json['typeParameters'] as List? ?? [])
-          .map((p) => TypeParameterApi.fromJson(p))
+          .map((p) => TypeParameterApi(
+                name: p.name.lexeme,
+                bound: p.bound?.toString(),
+              ))
           .toList(),
       isDeprecated: json['isDeprecated'] ?? false,
     );
@@ -323,7 +324,10 @@ class ConstructorApi {
   final List<ParameterApi> parameters;
   final bool isDeprecated;
 
-  ConstructorApi({required this.name, required this.parameters, required this.isDeprecated});
+  ConstructorApi(
+      {required this.name,
+      required this.parameters,
+      required this.isDeprecated});
 
   factory ConstructorApi.fromJson(Map<String, dynamic> json) {
     return ConstructorApi(
@@ -444,8 +448,7 @@ class _ApiVisitor extends GeneralizingAstVisitor<void> {
     for (final variable in node.variables.variables) {
       if (!variable.name.lexeme.startsWith('_')) {
         String? constValue;
-        if (node.variables.isConst &&
-            variable.initializer is SimpleIdentifier) {
+        if (node.variables.isConst && variable.initializer is Literal) {
           constValue = variable.initializer!.toSource();
         }
         _variables.add(VariableApi(
@@ -454,7 +457,8 @@ class _ApiVisitor extends GeneralizingAstVisitor<void> {
           isFinal: node.variables.isFinal,
           isConst: node.variables.isConst,
           constValue: constValue,
-          isDeprecated: node.variables.metadata.any((m) => m.name.name == 'deprecated'),
+          isDeprecated:
+              node.variables.metadata.any((m) => m.name.name == 'deprecated'),
         ));
       }
     }
@@ -476,7 +480,9 @@ class _ApiVisitor extends GeneralizingAstVisitor<void> {
   @override
   void visitMixinDeclaration(MixinDeclaration node) {
     if (!node.name.lexeme.startsWith('_')) {
-      _mixins.add(MixinApi(name: node.name.lexeme, isDeprecated: node.metadata.any((m) => m.name.name == 'deprecated')));
+      _mixins.add(MixinApi(
+          name: node.name.lexeme,
+          isDeprecated: node.metadata.any((m) => m.name.name == 'deprecated')));
     }
     super.visitMixinDeclaration(node);
   }
@@ -484,7 +490,9 @@ class _ApiVisitor extends GeneralizingAstVisitor<void> {
   @override
   void visitExtensionDeclaration(ExtensionDeclaration node) {
     if (node.name?.lexeme != null && !node.name!.lexeme.startsWith('_')) {
-      _extensions.add(ExtensionApi(name: node.name!.lexeme, isDeprecated: node.metadata.any((m) => m.name.name == 'deprecated')));
+      _extensions.add(ExtensionApi(
+          name: node.name!.lexeme,
+          isDeprecated: node.metadata.any((m) => m.name.name == 'deprecated')));
     }
     super.visitExtensionDeclaration(node);
   }
@@ -501,13 +509,14 @@ class _MemberVisitor extends GeneralizingAstVisitor<void> {
       final parameters = node.parameters?.parameters.map((p) {
         final kind = p.isNamed ? ParameterKind.named : ParameterKind.positional;
         final name = p.name?.lexeme ?? '';
+        final typeNode = p is DefaultFormalParameter
+            ? p.parameter.childEntities
+                .firstWhereOrNull((e) => e is TypeAnnotation)
+            : p.childEntities.firstWhereOrNull((e) => e is TypeAnnotation);
         final type =
-            (p.childEntities.firstWhereOrNull((e) => e is TypeAnnotation)
-                        as TypeAnnotation?)
-                    ?.type
-                    ?.toString() ??
-                'dynamic';
-        return ParameterApi(name: name, type: type, kind: kind, isRequired: p.isRequired);
+            (typeNode as TypeAnnotation?)?.type?.toString() ?? 'dynamic';
+        return ParameterApi(
+            name: name, type: type, kind: kind, isRequired: p.isRequired);
       }).toList();
 
       methods.add(MethodApi(
@@ -525,7 +534,7 @@ class _MemberVisitor extends GeneralizingAstVisitor<void> {
     for (final variable in node.fields.variables) {
       if (!variable.name.lexeme.startsWith('_')) {
         String? constValue;
-        if (node.fields.isConst && variable.initializer is SimpleIdentifier) {
+        if (node.fields.isConst && variable.initializer is Literal) {
           constValue = variable.initializer!.toSource();
         }
         fields.add(FieldApi(
@@ -546,8 +555,13 @@ class _MemberVisitor extends GeneralizingAstVisitor<void> {
     final parameters = node.parameters.parameters.map((p) {
       final kind = p.isNamed ? ParameterKind.named : ParameterKind.positional;
       final name = p.name?.lexeme ?? '';
-      final type = (p.childEntities.firstWhereOrNull((e) => e is TypeAnnotation) as TypeAnnotation?)?.type?.toString() ?? 'dynamic';
-      return ParameterApi(name: name, type: type, kind: kind, isRequired: p.isRequired);
+      final typeNode = p is DefaultFormalParameter
+          ? p.parameter.childEntities
+              .firstWhereOrNull((e) => e is TypeAnnotation)
+          : p.childEntities.firstWhereOrNull((e) => e is TypeAnnotation);
+      final type = (typeNode as TypeAnnotation?)?.type?.toString() ?? 'dynamic';
+      return ParameterApi(
+          name: name, type: type, kind: kind, isRequired: p.isRequired);
     }).toList();
 
     constructors.add(ConstructorApi(
@@ -584,7 +598,8 @@ class EnumApi {
   final List<String> values;
   final bool isDeprecated;
 
-  EnumApi({required this.name, required this.values, required this.isDeprecated});
+  EnumApi(
+      {required this.name, required this.values, required this.isDeprecated});
 
   factory EnumApi.fromJson(Map<String, dynamic> json) {
     return EnumApi(

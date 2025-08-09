@@ -20,9 +20,12 @@
 - [x] Detect changes to `const` variable values
 - [x] Detect adding `abstract` keyword to classes
 - [ ] Perform deep analysis of supertype hierarchies
+  - Requires full type resolution and traversing the element model.
 - [x] Add support for Mixins and Extensions
 - [x] Analyze constructors
 - [x] Detect changes to member scope (static)
 - [x] (Minor) Detect API deprecations
 - [ ] (Minor) Loosen generic type constraints
+  - Partially implemented (removing a bound is MINOR). Full implementation requires deep type analysis.
 - [ ] (Minor) Allow return types to change to a subtype
+  - Requires deep type analysis to check for subtype relationships. Currently, any change is treated as MAJOR.
