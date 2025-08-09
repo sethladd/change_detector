@@ -59,6 +59,7 @@ class ClassApi {
   final String name;
   final List<MethodApi> methods;
   final List<FieldApi> fields;
+  final List<ConstructorApi> constructors;
   final String? superclass;
   final List<String> interfaces;
   final List<String> mixins;
@@ -69,6 +70,7 @@ class ClassApi {
     required this.name,
     required this.methods,
     required this.fields,
+    required this.constructors,
     this.superclass,
     required this.interfaces,
     required this.mixins,
@@ -79,10 +81,15 @@ class ClassApi {
   factory ClassApi.fromJson(Map<String, dynamic> json) {
     return ClassApi(
       name: json['name'],
-      methods:
-          (json['methods'] as List).map((m) => MethodApi.fromJson(m)).toList(),
-      fields:
-          (json['fields'] as List).map((f) => FieldApi.fromJson(f)).toList(),
+      methods: (json['methods'] as List)
+          .map((m) => MethodApi.fromJson(m))
+          .toList(),
+      fields: (json['fields'] as List)
+          .map((f) => FieldApi.fromJson(f))
+          .toList(),
+      constructors: (json['constructors'] as List? ?? [])
+          .map((c) => ConstructorApi.fromJson(c))
+          .toList(),
       superclass: json['superclass'],
       interfaces: (json['interfaces'] as List).cast<String>(),
       mixins: (json['mixins'] as List).cast<String>(),
@@ -98,6 +105,7 @@ class ClassApi {
       'name': name,
       'methods': methods.map((m) => m.toJson()).toList(),
       'fields': fields.map((f) => f.toJson()).toList(),
+      'constructors': constructors.map((c) => c.toJson()).toList(),
       'superclass': superclass,
       'interfaces': interfaces,
       'mixins': mixins,
@@ -282,6 +290,29 @@ class FieldApi {
   }
 }
 
+class ConstructorApi {
+  final String name;
+  final List<ParameterApi> parameters;
+
+  ConstructorApi({required this.name, required this.parameters});
+
+  factory ConstructorApi.fromJson(Map<String, dynamic> json) {
+    return ConstructorApi(
+      name: json['name'],
+      parameters: (json['parameters'] as List)
+          .map((p) => ParameterApi.fromJson(p))
+          .toList(),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'name': name,
+      'parameters': parameters.map((p) => p.toJson()).toList(),
+    };
+  }
+}
+
 class ApiGenerator {
   Api? generateApi(CompilationUnit unit) {
     final visitor = _ApiVisitor();
@@ -321,6 +352,7 @@ class _ApiVisitor extends GeneralizingAstVisitor<void> {
         name: node.name.lexeme,
         methods: memberVisitor.methods,
         fields: memberVisitor.fields,
+        constructors: memberVisitor.constructors,
         superclass: node.extendsClause?.superclass.toString(),
         interfaces: node.implementsClause?.interfaces
                 .map((t) => t.toString())
@@ -426,6 +458,7 @@ class _ApiVisitor extends GeneralizingAstVisitor<void> {
 class _MemberVisitor extends GeneralizingAstVisitor<void> {
   final List<MethodApi> methods = [];
   final List<FieldApi> fields = [];
+  final List<ConstructorApi> constructors = [];
 
   @override
   void visitMethodDeclaration(MethodDeclaration node) {
@@ -468,6 +501,21 @@ class _MemberVisitor extends GeneralizingAstVisitor<void> {
         ));
       }
     }
+  }
+
+  @override
+  void visitConstructorDeclaration(ConstructorDeclaration node) {
+    final parameters = node.parameters.parameters.map((p) {
+      final kind = p.isNamed ? ParameterKind.named : ParameterKind.positional;
+      final name = p.name?.lexeme ?? '';
+      final type = (p.childEntities.firstWhereOrNull((e) => e is TypeAnnotation) as TypeAnnotation?)?.type?.toString() ?? 'dynamic';
+      return ParameterApi(name: name, type: type, kind: kind, isRequired: p.isRequired);
+    }).toList();
+
+    constructors.add(ConstructorApi(
+      name: node.name?.lexeme ?? '',
+      parameters: parameters,
+    ));
   }
 }
 

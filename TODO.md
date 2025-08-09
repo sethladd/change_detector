@@ -21,5 +21,5 @@
 - [x] Detect adding `abstract` keyword to classes
 - [ ] Perform deep analysis of supertype hierarchies
 - [x] Add support for Mixins and Extensions
-- [ ] Analyze constructors
+- [x] Analyze constructors
 - [ ] Detect changes to member scope (static)

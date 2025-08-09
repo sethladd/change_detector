@@ -445,14 +445,16 @@ void main() {
     group('Mixin and Extension changes', () {
       test('adding a mixin is a MINOR change', () {
         final oldApi = _createApiWithItems();
-        final newApi = _createApiWithItems(mixins: [MixinApi(name: 'TestMixin')]);
+        final newApi =
+            _createApiWithItems(mixins: [MixinApi(name: 'TestMixin')]);
         final result = differ.compare(oldApi, newApi);
         expect(result.changeType, equals(ChangeType.minor));
         expect(result.reasons, contains('MINOR: Added mixin TestMixin'));
       });
 
       test('removing a mixin is a MAJOR change', () {
-        final oldApi = _createApiWithItems(mixins: [MixinApi(name: 'TestMixin')]);
+        final oldApi =
+            _createApiWithItems(mixins: [MixinApi(name: 'TestMixin')]);
         final newApi = _createApiWithItems();
         final result = differ.compare(oldApi, newApi);
         expect(result.changeType, equals(ChangeType.major));
@@ -461,18 +463,22 @@ void main() {
 
       test('adding an extension is a MINOR change', () {
         final oldApi = _createApiWithItems();
-        final newApi = _createApiWithItems(extensions: [ExtensionApi(name: 'TestExtension')]);
+        final newApi = _createApiWithItems(
+            extensions: [ExtensionApi(name: 'TestExtension')]);
         final result = differ.compare(oldApi, newApi);
         expect(result.changeType, equals(ChangeType.minor));
-        expect(result.reasons, contains('MINOR: Added extension TestExtension'));
+        expect(
+            result.reasons, contains('MINOR: Added extension TestExtension'));
       });
 
       test('removing an extension is a MAJOR change', () {
-        final oldApi = _createApiWithItems(extensions: [ExtensionApi(name: 'TestExtension')]);
+        final oldApi = _createApiWithItems(
+            extensions: [ExtensionApi(name: 'TestExtension')]);
         final newApi = _createApiWithItems();
         final result = differ.compare(oldApi, newApi);
         expect(result.changeType, equals(ChangeType.major));
-        expect(result.reasons, contains('MAJOR: Removed extension TestExtension'));
+        expect(
+            result.reasons, contains('MAJOR: Removed extension TestExtension'));
       });
     });
 
@@ -687,6 +693,28 @@ void main() {
                 'MAJOR: Const field testField in class TestClass changed value from 1 to 2'));
       });
     });
+
+    group('Constructor changes', () {
+      test('adding a constructor is a MINOR change', () {
+        final oldApi = _createApiWithConstructors([]);
+        final newApi = _createApiWithConstructors([
+          ConstructorApi(name: 'TestConstructor', parameters: [])
+        ]);
+        final result = differ.compare(oldApi, newApi);
+        expect(result.changeType, equals(ChangeType.minor));
+        expect(result.reasons, contains('MINOR: Added constructor TestConstructor to class TestClass'));
+      });
+
+      test('removing a constructor is a MAJOR change', () {
+        final oldApi = _createApiWithConstructors([
+          ConstructorApi(name: 'TestConstructor', parameters: [])
+        ]);
+        final newApi = _createApiWithConstructors([]);
+        final result = differ.compare(oldApi, newApi);
+        expect(result.changeType, equals(ChangeType.major));
+        expect(result.reasons, contains('MAJOR: Removed constructor TestConstructor from class TestClass'));
+      });
+    });
   });
 }
 
@@ -702,6 +730,7 @@ Api _createApiWithMethodParams(List<ParameterApi> params) {
         )
       ],
       fields: [],
+      constructors: [],
       interfaces: [],
       mixins: [],
       typeParameters: [],
@@ -734,6 +763,7 @@ Api _createApiWithClassAndFields(List<FieldApi> fields) {
       name: 'TestClass',
       methods: [],
       fields: fields,
+      constructors: [],
       interfaces: [],
       mixins: [],
       typeParameters: [],
@@ -759,6 +789,7 @@ Api _createApiWithClassHierarchy({
       name: 'TestClass',
       methods: [],
       fields: [],
+      constructors: [],
       superclass: superclass,
       interfaces: interfaces,
       mixins: mixins,
@@ -774,10 +805,27 @@ Api _createApiWithClassTypeParams(List<TypeParameterApi> typeParams) {
       name: 'TestClass',
       methods: [],
       fields: [],
+      constructors: [],
       superclass: null,
       interfaces: [],
       mixins: [],
       typeParameters: typeParams,
+      isAbstract: false,
+    )
+  ]);
+}
+
+Api _createApiWithConstructors(List<ConstructorApi> constructors) {
+  return _createApiWithItems(classes: [
+    ClassApi(
+      name: 'TestClass',
+      methods: [],
+      fields: [],
+      constructors: constructors,
+      superclass: null,
+      interfaces: [],
+      mixins: [],
+      typeParameters: [],
       isAbstract: false,
     )
   ]);

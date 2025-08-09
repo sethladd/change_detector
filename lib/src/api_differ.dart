@@ -226,6 +226,40 @@ class ApiDiffer {
     }
     reasons.addAll(typeParameterDiff.reasons);
 
+    final constructorDiff = _compareConstructors(oldClass, newClass);
+    if (constructorDiff.changeType == ChangeType.major) {
+      changeType = ChangeType.major;
+    } else if (constructorDiff.changeType == ChangeType.minor && changeType == ChangeType.none) {
+      changeType = ChangeType.minor;
+    }
+    reasons.addAll(constructorDiff.reasons);
+
+    return DiffResult(changeType, reasons);
+  }
+
+  DiffResult _compareConstructors(ClassApi oldClass, ClassApi newClass) {
+    final reasons = <String>[];
+    var changeType = ChangeType.none;
+
+    final oldConstructors = { for (var c in oldClass.constructors) c.name: c };
+    final newConstructors = { for (var c in newClass.constructors) c.name: c };
+
+    for (final oldConstructor in oldClass.constructors) {
+      if (!newConstructors.containsKey(oldConstructor.name)) {
+        reasons.add('MAJOR: Removed constructor ${oldConstructor.name} from class ${oldClass.name}');
+        changeType = ChangeType.major;
+      }
+    }
+
+    for (final newConstructor in newClass.constructors) {
+      if (!oldConstructors.containsKey(newConstructor.name)) {
+        reasons.add('MINOR: Added constructor ${newConstructor.name} to class ${oldClass.name}');
+        if (changeType == ChangeType.none) {
+          changeType = ChangeType.minor;
+        }
+      }
+    }
+
     return DiffResult(changeType, reasons);
   }
 
