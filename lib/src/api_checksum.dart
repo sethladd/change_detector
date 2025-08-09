@@ -65,6 +65,7 @@ class ClassApi {
   final List<String> mixins;
   final bool isAbstract;
   final List<TypeParameterApi> typeParameters;
+  final bool isDeprecated;
 
   ClassApi({
     required this.name,
@@ -76,6 +77,7 @@ class ClassApi {
     required this.mixins,
     required this.isAbstract,
     required this.typeParameters,
+    required this.isDeprecated,
   });
 
   factory ClassApi.fromJson(Map<String, dynamic> json) {
@@ -97,6 +99,7 @@ class ClassApi {
       typeParameters: (json['typeParameters'] as List? ?? [])
           .map((p) => TypeParameterApi.fromJson(p))
           .toList(),
+      isDeprecated: json['isDeprecated'] ?? false,
     );
   }
 
@@ -111,6 +114,7 @@ class ClassApi {
       'mixins': mixins,
       'isAbstract': isAbstract,
       'typeParameters': typeParameters.map((p) => p.toJson()).toList(),
+      'isDeprecated': isDeprecated,
     };
   }
 }
@@ -120,12 +124,14 @@ class MethodApi {
   final String returnType;
   final List<ParameterApi> parameters;
   final bool isStatic;
+  final bool isDeprecated;
 
   MethodApi({
     required this.name,
     required this.returnType,
     required this.parameters,
     required this.isStatic,
+    required this.isDeprecated,
   });
 
   factory MethodApi.fromJson(Map<String, dynamic> json) {
@@ -136,6 +142,7 @@ class MethodApi {
           .map((p) => ParameterApi.fromJson(p))
           .toList(),
       isStatic: json['isStatic'] ?? false,
+      isDeprecated: json['isDeprecated'] ?? false,
     );
   }
 
@@ -145,6 +152,7 @@ class MethodApi {
       'returnType': returnType,
       'parameters': parameters.map((p) => p.toJson()).toList(),
       'isStatic': isStatic,
+      'isDeprecated': isDeprecated,
     };
   }
 }
@@ -191,12 +199,14 @@ class FunctionApi {
   final String returnType;
   final List<ParameterApi> parameters;
   final List<TypeParameterApi> typeParameters;
+  final bool isDeprecated;
 
   FunctionApi({
     required this.name,
     required this.returnType,
     required this.parameters,
     required this.typeParameters,
+    required this.isDeprecated,
   });
 
   factory FunctionApi.fromJson(Map<String, dynamic> json) {
@@ -209,6 +219,7 @@ class FunctionApi {
       typeParameters: (json['typeParameters'] as List? ?? [])
           .map((p) => TypeParameterApi.fromJson(p))
           .toList(),
+      isDeprecated: json['isDeprecated'] ?? false,
     );
   }
 
@@ -218,6 +229,7 @@ class FunctionApi {
       'returnType': returnType,
       'parameters': parameters.map((p) => p.toJson()).toList(),
       'typeParameters': typeParameters.map((p) => p.toJson()).toList(),
+      'isDeprecated': isDeprecated,
     };
   }
 }
@@ -228,6 +240,7 @@ class VariableApi {
   final bool isFinal;
   final bool isConst;
   final String? constValue;
+  final bool isDeprecated;
 
   VariableApi({
     required this.name,
@@ -235,6 +248,7 @@ class VariableApi {
     required this.isFinal,
     required this.isConst,
     this.constValue,
+    required this.isDeprecated,
   });
 
   factory VariableApi.fromJson(Map<String, dynamic> json) {
@@ -244,6 +258,7 @@ class VariableApi {
       isFinal: json['isFinal'],
       isConst: json['isConst'],
       constValue: json['constValue'],
+      isDeprecated: json['isDeprecated'] ?? false,
     );
   }
 
@@ -254,6 +269,7 @@ class VariableApi {
       'isFinal': isFinal,
       'isConst': isConst,
       'constValue': constValue,
+      'isDeprecated': isDeprecated,
     };
   }
 }
@@ -265,6 +281,7 @@ class FieldApi {
   final bool isConst;
   final String? constValue;
   final bool isStatic;
+  final bool isDeprecated;
 
   FieldApi({
     required this.name,
@@ -273,6 +290,7 @@ class FieldApi {
     required this.isConst,
     this.constValue,
     required this.isStatic,
+    required this.isDeprecated,
   });
 
   factory FieldApi.fromJson(Map<String, dynamic> json) {
@@ -283,6 +301,7 @@ class FieldApi {
       isConst: json['isConst'],
       constValue: json['constValue'],
       isStatic: json['isStatic'] ?? false,
+      isDeprecated: json['isDeprecated'] ?? false,
     );
   }
 
@@ -294,6 +313,7 @@ class FieldApi {
       'isConst': isConst,
       'constValue': constValue,
       'isStatic': isStatic,
+      'isDeprecated': isDeprecated,
     };
   }
 }
@@ -301,8 +321,9 @@ class FieldApi {
 class ConstructorApi {
   final String name;
   final List<ParameterApi> parameters;
+  final bool isDeprecated;
 
-  ConstructorApi({required this.name, required this.parameters});
+  ConstructorApi({required this.name, required this.parameters, required this.isDeprecated});
 
   factory ConstructorApi.fromJson(Map<String, dynamic> json) {
     return ConstructorApi(
@@ -310,6 +331,7 @@ class ConstructorApi {
       parameters: (json['parameters'] as List)
           .map((p) => ParameterApi.fromJson(p))
           .toList(),
+      isDeprecated: json['isDeprecated'] ?? false,
     );
   }
 
@@ -317,6 +339,7 @@ class ConstructorApi {
     return {
       'name': name,
       'parameters': parameters.map((p) => p.toJson()).toList(),
+      'isDeprecated': isDeprecated,
     };
   }
 }
@@ -376,6 +399,7 @@ class _ApiVisitor extends GeneralizingAstVisitor<void> {
                     ))
                 .toList() ??
             [],
+        isDeprecated: node.metadata.any((m) => m.name.name == 'deprecated'),
       ));
     }
     // Do not call super, to avoid visiting nested classes for now.
@@ -409,6 +433,7 @@ class _ApiVisitor extends GeneralizingAstVisitor<void> {
                     ))
                 .toList() ??
             [],
+        isDeprecated: node.metadata.any((m) => m.name.name == 'deprecated'),
       ));
     }
     super.visitFunctionDeclaration(node);
@@ -429,6 +454,7 @@ class _ApiVisitor extends GeneralizingAstVisitor<void> {
           isFinal: node.variables.isFinal,
           isConst: node.variables.isConst,
           constValue: constValue,
+          isDeprecated: node.variables.metadata.any((m) => m.name.name == 'deprecated'),
         ));
       }
     }
@@ -441,6 +467,7 @@ class _ApiVisitor extends GeneralizingAstVisitor<void> {
       _enums.add(EnumApi(
         name: node.name.lexeme,
         values: node.constants.map((c) => c.name.lexeme).toList(),
+        isDeprecated: node.metadata.any((m) => m.name.name == 'deprecated'),
       ));
     }
     super.visitEnumDeclaration(node);
@@ -449,7 +476,7 @@ class _ApiVisitor extends GeneralizingAstVisitor<void> {
   @override
   void visitMixinDeclaration(MixinDeclaration node) {
     if (!node.name.lexeme.startsWith('_')) {
-      _mixins.add(MixinApi(name: node.name.lexeme));
+      _mixins.add(MixinApi(name: node.name.lexeme, isDeprecated: node.metadata.any((m) => m.name.name == 'deprecated')));
     }
     super.visitMixinDeclaration(node);
   }
@@ -457,7 +484,7 @@ class _ApiVisitor extends GeneralizingAstVisitor<void> {
   @override
   void visitExtensionDeclaration(ExtensionDeclaration node) {
     if (node.name?.lexeme != null && !node.name!.lexeme.startsWith('_')) {
-      _extensions.add(ExtensionApi(name: node.name!.lexeme));
+      _extensions.add(ExtensionApi(name: node.name!.lexeme, isDeprecated: node.metadata.any((m) => m.name.name == 'deprecated')));
     }
     super.visitExtensionDeclaration(node);
   }
@@ -488,6 +515,7 @@ class _MemberVisitor extends GeneralizingAstVisitor<void> {
         returnType: node.returnType?.toString() ?? 'dynamic',
         parameters: parameters ?? [],
         isStatic: node.isStatic,
+        isDeprecated: node.metadata.any((m) => m.name.name == 'deprecated'),
       ));
     }
   }
@@ -507,6 +535,7 @@ class _MemberVisitor extends GeneralizingAstVisitor<void> {
           isConst: node.fields.isConst,
           constValue: constValue,
           isStatic: node.isStatic,
+          isDeprecated: node.metadata.any((m) => m.name.name == 'deprecated'),
         ));
       }
     }
@@ -524,6 +553,7 @@ class _MemberVisitor extends GeneralizingAstVisitor<void> {
     constructors.add(ConstructorApi(
       name: node.name?.lexeme ?? '',
       parameters: parameters,
+      isDeprecated: node.metadata.any((m) => m.name.name == 'deprecated'),
     ));
   }
 }
@@ -552,13 +582,15 @@ class TypeParameterApi {
 class EnumApi {
   final String name;
   final List<String> values;
+  final bool isDeprecated;
 
-  EnumApi({required this.name, required this.values});
+  EnumApi({required this.name, required this.values, required this.isDeprecated});
 
   factory EnumApi.fromJson(Map<String, dynamic> json) {
     return EnumApi(
       name: json['name'],
       values: (json['values'] as List).cast<String>(),
+      isDeprecated: json['isDeprecated'] ?? false,
     );
   }
 
@@ -566,34 +598,49 @@ class EnumApi {
     return {
       'name': name,
       'values': values,
+      'isDeprecated': isDeprecated,
     };
   }
 }
 
 class MixinApi {
   final String name;
+  final bool isDeprecated;
 
-  MixinApi({required this.name});
+  MixinApi({required this.name, required this.isDeprecated});
 
   factory MixinApi.fromJson(Map<String, dynamic> json) {
-    return MixinApi(name: json['name']);
+    return MixinApi(
+      name: json['name'],
+      isDeprecated: json['isDeprecated'] ?? false,
+    );
   }
 
   Map<String, dynamic> toJson() {
-    return {'name': name};
+    return {
+      'name': name,
+      'isDeprecated': isDeprecated,
+    };
   }
 }
 
 class ExtensionApi {
   final String name;
+  final bool isDeprecated;
 
-  ExtensionApi({required this.name});
+  ExtensionApi({required this.name, required this.isDeprecated});
 
   factory ExtensionApi.fromJson(Map<String, dynamic> json) {
-    return ExtensionApi(name: json['name']);
+    return ExtensionApi(
+      name: json['name'],
+      isDeprecated: json['isDeprecated'] ?? false,
+    );
   }
 
   Map<String, dynamic> toJson() {
-    return {'name': name};
+    return {
+      'name': name,
+      'isDeprecated': isDeprecated,
+    };
   }
 }

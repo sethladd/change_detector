@@ -23,3 +23,6 @@
 - [x] Add support for Mixins and Extensions
 - [x] Analyze constructors
 - [x] Detect changes to member scope (static)
+- [x] (Minor) Detect API deprecations
+- [ ] (Minor) Loosen generic type constraints
+- [ ] (Minor) Allow return types to change to a subtype

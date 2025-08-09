@@ -28,6 +28,12 @@ class ApiDiffer {
         reasons.add('MAJOR: Removed class ${oldClass.name}');
         changeType = ChangeType.major;
       } else {
+        if (!oldClass.isDeprecated && newClass.isDeprecated) {
+          reasons.add('MINOR: Class ${oldClass.name} is now deprecated');
+          if (changeType == ChangeType.none) {
+            changeType = ChangeType.minor;
+          }
+        }
         final classDiff = _compareClasses(oldClass, newClass);
         if (classDiff.changeType == ChangeType.major) {
           changeType = ChangeType.major;
@@ -102,9 +108,17 @@ class ApiDiffer {
     final newMixins = { for (var m in newApi.mixins) m.name: m };
 
     for (final oldMixin in oldApi.mixins) {
-      if (!newMixins.containsKey(oldMixin.name)) {
+      final newMixin = newMixins[oldMixin.name];
+      if (newMixin == null) {
         reasons.add('MAJOR: Removed mixin ${oldMixin.name}');
         changeType = ChangeType.major;
+      } else {
+        if (!oldMixin.isDeprecated && newMixin.isDeprecated) {
+          reasons.add('MINOR: Mixin ${oldMixin.name} is now deprecated');
+          if (changeType == ChangeType.none) {
+            changeType = ChangeType.minor;
+          }
+        }
       }
     }
 
@@ -128,9 +142,17 @@ class ApiDiffer {
     final newExtensions = { for (var e in newApi.extensions) e.name: e };
 
     for (final oldExtension in oldApi.extensions) {
-      if (!newExtensions.containsKey(oldExtension.name)) {
+      final newExtension = newExtensions[oldExtension.name];
+      if (newExtension == null) {
         reasons.add('MAJOR: Removed extension ${oldExtension.name}');
         changeType = ChangeType.major;
+      } else {
+        if (!oldExtension.isDeprecated && newExtension.isDeprecated) {
+          reasons.add('MINOR: Extension ${oldExtension.name} is now deprecated');
+          if (changeType == ChangeType.none) {
+            changeType = ChangeType.minor;
+          }
+        }
       }
     }
 
@@ -160,6 +182,12 @@ class ApiDiffer {
             'MAJOR: Removed method ${oldMethod.name} from class ${oldClass.name}');
         changeType = ChangeType.major;
       } else {
+        if (!oldMethod.isDeprecated && newMethod.isDeprecated) {
+          reasons.add('MINOR: Method ${oldMethod.name} is now deprecated');
+          if (changeType == ChangeType.none) {
+            changeType = ChangeType.minor;
+          }
+        }
         final methodDiff = _compareMethods(oldMethod, newMethod);
         if (methodDiff.changeType == ChangeType.major) {
           changeType = ChangeType.major;
@@ -245,9 +273,17 @@ class ApiDiffer {
     final newConstructors = { for (var c in newClass.constructors) c.name: c };
 
     for (final oldConstructor in oldClass.constructors) {
-      if (!newConstructors.containsKey(oldConstructor.name)) {
+      final newConstructor = newConstructors[oldConstructor.name];
+      if (newConstructor == null) {
         reasons.add('MAJOR: Removed constructor ${oldConstructor.name} from class ${oldClass.name}');
         changeType = ChangeType.major;
+      } else {
+        if (!oldConstructor.isDeprecated && newConstructor.isDeprecated) {
+          reasons.add('MINOR: Constructor ${oldConstructor.name} is now deprecated');
+          if (changeType == ChangeType.none) {
+            changeType = ChangeType.minor;
+          }
+        }
       }
     }
 
@@ -327,6 +363,12 @@ class ApiDiffer {
         reasons.add('MAJOR: Removed function ${oldFunction.name}');
         changeType = ChangeType.major;
       } else {
+        if (!oldFunction.isDeprecated && newFunction.isDeprecated) {
+          reasons.add('MINOR: Function ${oldFunction.name} is now deprecated');
+          if (changeType == ChangeType.none) {
+            changeType = ChangeType.minor;
+          }
+        }
         final functionDiff =
             _compareFunctionSignatures(oldFunction, newFunction);
         if (functionDiff.changeType == ChangeType.major) {
@@ -400,6 +442,12 @@ class ApiDiffer {
         reasons.add('MAJOR: Removed enum ${oldEnum.name}');
         changeType = ChangeType.major;
       } else {
+        if (!oldEnum.isDeprecated && newEnum.isDeprecated) {
+          reasons.add('MINOR: Enum ${oldEnum.name} is now deprecated');
+          if (changeType == ChangeType.none) {
+            changeType = ChangeType.minor;
+          }
+        }
         if (!const DeepCollectionEquality()
             .equals(oldEnum.values, newEnum.values)) {
           final oldValues = oldEnum.values.toSet();
@@ -455,6 +503,12 @@ class ApiDiffer {
             'MAJOR: Removed field ${oldField.name} from class ${oldClass.name}');
         changeType = ChangeType.major;
       } else {
+        if (!oldField.isDeprecated && newField.isDeprecated) {
+          reasons.add('MINOR: Field ${oldField.name} in class ${oldClass.name} is now deprecated');
+          if (changeType == ChangeType.none) {
+            changeType = ChangeType.minor;
+          }
+        }
         if (oldField.type != newField.type) {
           reasons.add(
               'MAJOR: Field ${oldField.name} in class ${oldClass.name} changed type from ${oldField.type} to ${newField.type}');
@@ -506,6 +560,12 @@ class ApiDiffer {
         reasons.add('MAJOR: Removed variable ${oldVariable.name}');
         changeType = ChangeType.major;
       } else {
+        if (!oldVariable.isDeprecated && newVariable.isDeprecated) {
+          reasons.add('MINOR: Variable ${oldVariable.name} is now deprecated');
+          if (changeType == ChangeType.none) {
+            changeType = ChangeType.minor;
+          }
+        }
         if (oldVariable.type != newVariable.type) {
           reasons.add(
               'MAJOR: Variable ${oldVariable.name} changed type from ${oldVariable.type} to ${newVariable.type}');
