@@ -457,7 +457,7 @@ void main() {
             contains(
                 'MAJOR: Changed bound on type parameter T on function f from num to String'));
       });
-      
+
       test('loosening a bound is a MINOR change', () async {
         final before = 'void f<T extends int>() {}';
         final after = 'void f<T extends num>() {}';
@@ -468,7 +468,7 @@ void main() {
             contains(
                 'MINOR: Loosened bound on type parameter T on function f from int to num'));
       });
-      
+
       test('tightening a bound is a MAJOR change', () async {
         final before = 'void f<T extends Object>() {}';
         final after = 'void f<T extends num>() {}';

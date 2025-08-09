@@ -787,7 +787,7 @@ void main() {
             contains(
                 'MAJOR: Changed bound on type parameter T on class TestClass from num to String'));
       });
-      
+
       test('loosening a bound is a MINOR change', () {
         final oldApi = _createApiWithClassTypeParams(
             [TypeParameterApi(name: 'T', bound: 'int')]);
@@ -800,7 +800,7 @@ void main() {
             contains(
                 'MINOR: Loosened bound on type parameter T on class TestClass from int to num'));
       });
-      
+
       test('tightening a bound is a MAJOR change', () {
         final oldApi = _createApiWithClassTypeParams(
             [TypeParameterApi(name: 'T', bound: 'Object')]);
@@ -891,7 +891,7 @@ void main() {
             contains(
                 'MAJOR: Changed bound on type parameter T on function testFunction from num to String'));
       });
-      
+
       test('loosening a bound is a MINOR change', () {
         final oldApi = _createApiWithFunctionTypeParams(
             [TypeParameterApi(name: 'T', bound: 'int')]);
@@ -904,7 +904,7 @@ void main() {
             contains(
                 'MINOR: Loosened bound on type parameter T on function testFunction from int to num'));
       });
-      
+
       test('tightening a bound is a MAJOR change', () {
         final oldApi = _createApiWithFunctionTypeParams(
             [TypeParameterApi(name: 'T', bound: 'Object')]);
