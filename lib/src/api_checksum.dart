@@ -1,4 +1,5 @@
 import 'dart:convert';
+
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:collection/collection.dart';
@@ -356,231 +357,6 @@ class ConstructorApi {
   }
 }
 
-class ApiGenerator {
-  Api? generateApi(CompilationUnit unit) {
-    final visitor = _ApiVisitor();
-    unit.accept(visitor);
-    return visitor.api;
-  }
-}
-
-class _ApiVisitor extends GeneralizingAstVisitor<void> {
-  final List<ClassApi> _classes = [];
-  final List<FunctionApi> _functions = [];
-  final List<VariableApi> _variables = [];
-  final List<EnumApi> _enums = [];
-  final List<MixinApi> _mixins = [];
-  final List<ExtensionApi> _extensions = [];
-  Api? api;
-
-  @override
-  void visitCompilationUnit(CompilationUnit node) {
-    super.visitCompilationUnit(node);
-    api = Api(
-      classes: _classes,
-      functions: _functions,
-      variables: _variables,
-      enums: _enums,
-      mixins: _mixins,
-      extensions: _extensions,
-    );
-  }
-
-  @override
-  void visitClassDeclaration(ClassDeclaration node) {
-    if (!node.name.lexeme.startsWith('_')) {
-      final memberVisitor = _MemberVisitor();
-      node.visitChildren(memberVisitor);
-      _classes.add(ClassApi(
-        name: node.name.lexeme,
-        methods: memberVisitor.methods,
-        fields: memberVisitor.fields,
-        constructors: memberVisitor.constructors,
-        superclass: node.extendsClause?.superclass.toString(),
-        interfaces: node.implementsClause?.interfaces
-                .map((t) => t.toString())
-                .toList() ??
-            [],
-        mixins:
-            node.withClause?.mixinTypes.map((t) => t.toString()).toList() ?? [],
-        isAbstract: node.abstractKeyword != null,
-        typeParameters: node.typeParameters?.typeParameters
-                .map((p) => TypeParameterApi(
-                      name: p.name.lexeme,
-                      bound: p.bound?.toString(),
-                    ))
-                .toList() ??
-            [],
-        isDeprecated: node.metadata.any((m) => m.name.name == 'deprecated'),
-      ));
-    }
-    // Do not call super, to avoid visiting nested classes for now.
-  }
-
-  @override
-  void visitFunctionDeclaration(FunctionDeclaration node) {
-    if (!node.name.lexeme.startsWith('_')) {
-      final parameters =
-          node.functionExpression.parameters?.parameters.map((p) {
-        final kind = p.isNamed ? ParameterKind.named : ParameterKind.positional;
-        final name = p.name?.lexeme ?? '';
-        final type =
-            (p.childEntities.firstWhereOrNull((e) => e is TypeAnnotation)
-                        as TypeAnnotation?)
-                    ?.type
-                    ?.toString() ??
-                'dynamic';
-        return ParameterApi(
-            name: name, type: type, kind: kind, isRequired: p.isRequired);
-      }).toList();
-
-      _functions.add(FunctionApi(
-        name: node.name.lexeme,
-        returnType: node.returnType?.toString() ?? 'dynamic',
-        parameters: parameters ?? [],
-        typeParameters: node.functionExpression.typeParameters?.typeParameters
-                .map((p) => TypeParameterApi(
-                      name: p.name.lexeme,
-                      bound: p.bound?.toString(),
-                    ))
-                .toList() ??
-            [],
-        isDeprecated: node.metadata.any((m) => m.name.name == 'deprecated'),
-      ));
-    }
-    super.visitFunctionDeclaration(node);
-  }
-
-  @override
-  void visitTopLevelVariableDeclaration(TopLevelVariableDeclaration node) {
-    for (final variable in node.variables.variables) {
-      if (!variable.name.lexeme.startsWith('_')) {
-        String? constValue;
-        if (node.variables.isConst && variable.initializer is Literal) {
-          constValue = variable.initializer!.toSource();
-        }
-        _variables.add(VariableApi(
-          name: variable.name.lexeme,
-          type: node.variables.type?.toString() ?? 'dynamic',
-          isFinal: node.variables.isFinal,
-          isConst: node.variables.isConst,
-          constValue: constValue,
-          isDeprecated:
-              node.variables.metadata.any((m) => m.name.name == 'deprecated'),
-        ));
-      }
-    }
-    super.visitTopLevelVariableDeclaration(node);
-  }
-
-  @override
-  void visitEnumDeclaration(EnumDeclaration node) {
-    if (!node.name.lexeme.startsWith('_')) {
-      _enums.add(EnumApi(
-        name: node.name.lexeme,
-        values: node.constants.map((c) => c.name.lexeme).toList(),
-        isDeprecated: node.metadata.any((m) => m.name.name == 'deprecated'),
-      ));
-    }
-    super.visitEnumDeclaration(node);
-  }
-
-  @override
-  void visitMixinDeclaration(MixinDeclaration node) {
-    if (!node.name.lexeme.startsWith('_')) {
-      _mixins.add(MixinApi(
-          name: node.name.lexeme,
-          isDeprecated: node.metadata.any((m) => m.name.name == 'deprecated')));
-    }
-    super.visitMixinDeclaration(node);
-  }
-
-  @override
-  void visitExtensionDeclaration(ExtensionDeclaration node) {
-    if (node.name?.lexeme != null && !node.name!.lexeme.startsWith('_')) {
-      _extensions.add(ExtensionApi(
-          name: node.name!.lexeme,
-          isDeprecated: node.metadata.any((m) => m.name.name == 'deprecated')));
-    }
-    super.visitExtensionDeclaration(node);
-  }
-}
-
-class _MemberVisitor extends GeneralizingAstVisitor<void> {
-  final List<MethodApi> methods = [];
-  final List<FieldApi> fields = [];
-  final List<ConstructorApi> constructors = [];
-
-  @override
-  void visitMethodDeclaration(MethodDeclaration node) {
-    if (!node.name.lexeme.startsWith('_')) {
-      final parameters = node.parameters?.parameters.map((p) {
-        final kind = p.isNamed ? ParameterKind.named : ParameterKind.positional;
-        final name = p.name?.lexeme ?? '';
-        final typeNode = p is DefaultFormalParameter
-            ? p.parameter.childEntities
-                .firstWhereOrNull((e) => e is TypeAnnotation)
-            : p.childEntities.firstWhereOrNull((e) => e is TypeAnnotation);
-        final type =
-            (typeNode as TypeAnnotation?)?.type?.toString() ?? 'dynamic';
-        return ParameterApi(name: name, type: type, kind: kind, isRequired: p.isRequired);
-      }).toList();
-
-      methods.add(MethodApi(
-        name: node.name.lexeme,
-        returnType: node.returnType?.toString() ?? 'dynamic',
-        parameters: parameters ?? [],
-        isStatic: node.isStatic,
-        isDeprecated: node.metadata.any((m) => m.name.name == 'deprecated'),
-        isGetter: node.isGetter,
-        isSetter: node.isSetter,
-      ));
-    }
-  }
-
-  @override
-  void visitFieldDeclaration(FieldDeclaration node) {
-    for (final variable in node.fields.variables) {
-      if (!variable.name.lexeme.startsWith('_')) {
-        String? constValue;
-        if (node.fields.isConst && variable.initializer is Literal) {
-          constValue = variable.initializer!.toSource();
-        }
-        fields.add(FieldApi(
-          name: variable.name.lexeme,
-          type: node.fields.type?.toString() ?? 'dynamic',
-          isFinal: node.fields.isFinal,
-          isConst: node.fields.isConst,
-          constValue: constValue,
-          isStatic: node.isStatic,
-          isDeprecated: node.metadata.any((m) => m.name.name == 'deprecated'),
-        ));
-      }
-    }
-  }
-
-  @override
-  void visitConstructorDeclaration(ConstructorDeclaration node) {
-    final parameters = node.parameters.parameters.map((p) {
-      final kind = p.isNamed ? ParameterKind.named : ParameterKind.positional;
-      final name = p.name?.lexeme ?? '';
-      final typeNode = p is DefaultFormalParameter
-          ? p.parameter.childEntities
-              .firstWhereOrNull((e) => e is TypeAnnotation)
-          : p.childEntities.firstWhereOrNull((e) => e is TypeAnnotation);
-      final type = (typeNode as TypeAnnotation?)?.type?.toString() ?? 'dynamic';
-      return ParameterApi(
-          name: name, type: type, kind: kind, isRequired: p.isRequired);
-    }).toList();
-
-    constructors.add(ConstructorApi(
-      name: node.name?.lexeme ?? '',
-      parameters: parameters,
-      isDeprecated: node.metadata.any((m) => m.name.name == 'deprecated'),
-    ));
-  }
-}
-
 class TypeParameterApi {
   final String name;
   final String? bound;
@@ -666,5 +442,227 @@ class ExtensionApi {
       'name': name,
       'isDeprecated': isDeprecated,
     };
+  }
+}
+
+class ApiGenerator {
+  Api? generateApi(CompilationUnit unit) {
+    final visitor = _ApiVisitor();
+    unit.accept(visitor);
+    return visitor.api;
+  }
+}
+
+class _ApiVisitor extends GeneralizingAstVisitor<void> {
+  final List<ClassApi> _classes = [];
+  final List<FunctionApi> _functions = [];
+  final List<VariableApi> _variables = [];
+  final List<EnumApi> _enums = [];
+  final List<MixinApi> _mixins = [];
+  final List<ExtensionApi> _extensions = [];
+  Api? api;
+
+  @override
+  void visitCompilationUnit(CompilationUnit node) {
+    super.visitCompilationUnit(node);
+    api = Api(
+      classes: _classes,
+      functions: _functions,
+      variables: _variables,
+      enums: _enums,
+      mixins: _mixins,
+      extensions: _extensions,
+    );
+  }
+
+  @override
+  void visitClassDeclaration(ClassDeclaration node) {
+    if (!node.name.lexeme.startsWith('_')) {
+      final memberVisitor = _MemberVisitor();
+      node.visitChildren(memberVisitor);
+      _classes.add(ClassApi(
+        name: node.name.lexeme,
+        methods: memberVisitor.methods,
+        fields: memberVisitor.fields,
+        constructors: memberVisitor.constructors,
+        superclass: node.extendsClause?.superclass.toString(),
+        interfaces: node.implementsClause?.interfaces
+                .map((t) => t.toString())
+                .toList() ??
+            [],
+        mixins:
+            node.withClause?.mixinTypes.map((t) => t.toString()).toList() ?? [],
+        isAbstract: node.abstractKeyword != null,
+        typeParameters: node.typeParameters?.typeParameters
+                .map((p) => TypeParameterApi(
+                      name: p.name.lexeme,
+                      bound: p.bound?.toString(),
+                    ))
+                .toList() ??
+            [],
+        isDeprecated: node.metadata.any((m) => m.name.name == 'deprecated'),
+      ));
+    }
+  }
+
+  @override
+  void visitFunctionDeclaration(FunctionDeclaration node) {
+    if (!node.name.lexeme.startsWith('_')) {
+      final parameters =
+          node.functionExpression.parameters?.parameters.map((p) {
+        final kind = p.isNamed ? ParameterKind.named : ParameterKind.positional;
+        final name = p.name?.lexeme ?? '';
+        final typeNode = p is DefaultFormalParameter
+            ? p.parameter.childEntities
+                .firstWhereOrNull((e) => e is TypeAnnotation)
+            : p.childEntities.firstWhereOrNull((e) => e is TypeAnnotation);
+        final type =
+            (typeNode as TypeAnnotation?)?.type?.toString() ?? 'dynamic';
+        return ParameterApi(
+            name: name, type: type, kind: kind, isRequired: p.isRequired);
+      }).toList();
+
+      _functions.add(FunctionApi(
+        name: node.name.lexeme,
+        returnType: node.returnType?.toString() ?? 'dynamic',
+        parameters: parameters ?? [],
+        typeParameters: node.functionExpression.typeParameters?.typeParameters
+                .map((p) => TypeParameterApi(
+                      name: p.name.lexeme,
+                      bound: p.bound?.toString(),
+                    ))
+                .toList() ??
+            [],
+        isDeprecated: node.metadata.any((m) => m.name.name == 'deprecated'),
+      ));
+    }
+  }
+
+  @override
+  void visitTopLevelVariableDeclaration(TopLevelVariableDeclaration node) {
+    for (final variable in node.variables.variables) {
+      if (!variable.name.lexeme.startsWith('_')) {
+        String? constValue;
+        if (node.variables.isConst && variable.initializer is Literal) {
+          constValue = variable.initializer!.toSource();
+        }
+        _variables.add(VariableApi(
+          name: variable.name.lexeme,
+          type: node.variables.type?.toString() ?? 'dynamic',
+          isFinal: node.variables.isFinal,
+          isConst: node.variables.isConst,
+          constValue: constValue,
+          isDeprecated:
+              node.variables.metadata.any((m) => m.name.name == 'deprecated'),
+        ));
+      }
+    }
+  }
+
+  @override
+  void visitEnumDeclaration(EnumDeclaration node) {
+    if (!node.name.lexeme.startsWith('_')) {
+      _enums.add(EnumApi(
+        name: node.name.lexeme,
+        values: node.constants.map((c) => c.name.lexeme).toList(),
+        isDeprecated: node.metadata.any((m) => m.name.name == 'deprecated'),
+      ));
+    }
+  }
+
+  @override
+  void visitMixinDeclaration(MixinDeclaration node) {
+    if (!node.name.lexeme.startsWith('_')) {
+      _mixins.add(MixinApi(
+        name: node.name.lexeme,
+        isDeprecated: node.metadata.any((m) => m.name.name == 'deprecated'),
+      ));
+    }
+  }
+
+  @override
+  void visitExtensionDeclaration(ExtensionDeclaration node) {
+    if (node.name != null && !node.name!.lexeme.startsWith('_')) {
+      _extensions.add(ExtensionApi(
+        name: node.name!.lexeme,
+        isDeprecated: node.metadata.any((m) => m.name.name == 'deprecated'),
+      ));
+    }
+  }
+}
+
+class _MemberVisitor extends GeneralizingAstVisitor<void> {
+  final List<MethodApi> methods = [];
+  final List<FieldApi> fields = [];
+  final List<ConstructorApi> constructors = [];
+
+  @override
+  void visitMethodDeclaration(MethodDeclaration node) {
+    if (!node.name.lexeme.startsWith('_')) {
+      final parameters = node.parameters?.parameters.map((p) {
+        final kind = p.isNamed ? ParameterKind.named : ParameterKind.positional;
+        final name = p.name?.lexeme ?? '';
+        final typeNode = p is DefaultFormalParameter
+            ? p.parameter.childEntities
+                .firstWhereOrNull((e) => e is TypeAnnotation)
+            : p.childEntities.firstWhereOrNull((e) => e is TypeAnnotation);
+        final type =
+            (typeNode as TypeAnnotation?)?.type?.toString() ?? 'dynamic';
+        return ParameterApi(
+            name: name, type: type, kind: kind, isRequired: p.isRequired);
+      }).toList();
+
+      methods.add(MethodApi(
+        name: node.name.lexeme,
+        returnType: node.returnType?.toString() ?? 'dynamic',
+        parameters: parameters ?? [],
+        isStatic: node.isStatic,
+        isDeprecated: node.metadata.any((m) => m.name.name == 'deprecated'),
+        isGetter: node.isGetter,
+        isSetter: node.isSetter,
+      ));
+    }
+  }
+
+  @override
+  void visitFieldDeclaration(FieldDeclaration node) {
+    for (final variable in node.fields.variables) {
+      if (!variable.name.lexeme.startsWith('_')) {
+        String? constValue;
+        if (node.fields.isConst && variable.initializer is Literal) {
+          constValue = variable.initializer!.toSource();
+        }
+        fields.add(FieldApi(
+          name: variable.name.lexeme,
+          type: node.fields.type?.toString() ?? 'dynamic',
+          isFinal: node.fields.isFinal,
+          isConst: node.fields.isConst,
+          constValue: constValue,
+          isStatic: node.isStatic,
+          isDeprecated: node.metadata.any((m) => m.name.name == 'deprecated'),
+        ));
+      }
+    }
+  }
+
+  @override
+  void visitConstructorDeclaration(ConstructorDeclaration node) {
+    final parameters = node.parameters.parameters.map((p) {
+      final kind = p.isNamed ? ParameterKind.named : ParameterKind.positional;
+      final name = p.name?.lexeme ?? '';
+      final typeNode = p is DefaultFormalParameter
+          ? p.parameter.childEntities
+              .firstWhereOrNull((e) => e is TypeAnnotation)
+          : p.childEntities.firstWhereOrNull((e) => e is TypeAnnotation);
+      final type = (typeNode as TypeAnnotation?)?.type?.toString() ?? 'dynamic';
+      return ParameterApi(
+          name: name, type: type, kind: kind, isRequired: p.isRequired);
+    }).toList();
+
+    constructors.add(ConstructorApi(
+      name: node.name?.lexeme ?? '',
+      parameters: parameters,
+      isDeprecated: node.metadata.any((m) => m.name.name == 'deprecated'),
+    ));
   }
 }
