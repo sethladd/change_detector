@@ -23,7 +23,7 @@ class Button extends Widget {
 }
 
 /// Usage example
-void main() {
-  final button = Button(id: 'btn1', label: 'Click me');
-  print('Button created: ${button.id}, ${button.label}');
-}
+// void main() {
+//   final button = Button(id: 'btn1', label: 'Click me');
+//   print('Button created: ${button.id}, ${button.label}');
+// }

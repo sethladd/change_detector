@@ -93,26 +93,26 @@ class Product implements Identifiable {
 }
 
 /// Usage example
-void main() {
-  final user = User('Alice', 30, email: 'alice@example.com');
-  print(user.displayName);
-  print('Is adult: ${user.isAdult}'); // Using new getter
-  user.incrementAge();
-  user.updateEmail('newalice@example.com'); // Using new method
+// void main() {
+//   final user = User('Alice', 30, email: 'alice@example.com');
+//   print(user.displayName);
+//   print('Is adult: ${user.isAdult}'); // Using new getter
+//   user.incrementAge();
+//   user.updateEmail('newalice@example.com'); // Using new method
 
-  final employee = Employee('Bob', 35, 'Engineering', email: 'bob@example.com');
-  print(employee.isAdult); // Employee has access to the new getter
-  employee.updateEmail(
-      'newbob@example.com'); // Employee has access to the new method
+//   final employee = Employee('Bob', 35, 'Engineering', email: 'bob@example.com');
+//   print(employee.isAdult); // Employee has access to the new getter
+//   employee.updateEmail(
+//       'newbob@example.com'); // Employee has access to the new method
 
-  final product = Product('P123', 'Widget');
-  print(product.getId());
-  print(product.getDisplayName()); // Product must implement the new method
+//   final product = Product('P123', 'Widget');
+//   print(product.getId());
+//   print(product.getDisplayName()); // Product must implement the new method
 
-  Logger.verbose = true; // Using new static field
-  if (Logger.isVerbose) {
-    // Using new static getter
-    Logger.log('Created user: $user');
-  }
-  Logger.logError('Example error'); // Using new static method
-}
+//   Logger.verbose = true; // Using new static field
+//   if (Logger.isVerbose) {
+//     // Using new static getter
+//     Logger.log('Created user: $user');
+//   }
+//   Logger.logError('Example error'); // Using new static method
+// }

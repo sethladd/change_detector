@@ -13,15 +13,15 @@ extension ObjectExtension on Object {
 }
 
 /// Usage example
-void main() {
-  // Extension works on any object
-  'Hello'.printInfo();
-  123.printInfo();
-  true.printInfo();
+// void main() {
+//   // Extension works on any object
+//   'Hello'.printInfo();
+//   123.printInfo();
+//   true.printInfo();
 
-  final list = [1, 2, 3];
-  list.printInfo();
+//   final list = [1, 2, 3];
+//   list.printInfo();
 
-  final map = {'key': 'value'};
-  map.printInfo();
-}
+//   final map = {'key': 'value'};
+//   map.printInfo();
+// }

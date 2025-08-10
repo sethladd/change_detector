@@ -31,15 +31,15 @@ class User {
 }
 
 /// Usage example
-void main() {
-  final user = User('Alice', 30);
+// void main() {
+//   final user = User('Alice', 30);
 
-  // Using the members
-  print(user.name);
-  print(user.age);
-  user.incrementAge();
-  print(user.isAdult);
-  user.displayName = 'Alice Smith';
+//   // Using the members
+//   print(user.name);
+//   print(user.age);
+//   user.incrementAge();
+//   print(user.isAdult);
+//   user.displayName = 'Alice Smith';
 
-  final defaultUser = User.createDefault();
-}
+//   final defaultUser = User.createDefault();
+// }

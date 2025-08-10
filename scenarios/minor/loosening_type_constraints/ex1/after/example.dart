@@ -29,26 +29,26 @@ void printComparable<E>(E item) {
 }
 
 /// Usage example
-void main() {
-  // These are still valid with the loosened constraints
-  final intBox = NumericBox<int>(42);
-  final doubleBox = NumericBox<double>(3.14);
+// void main() {
+//   // These are still valid with the loosened constraints
+//   final intBox = NumericBox<int>(42);
+//   final doubleBox = NumericBox<double>(3.14);
 
-  print(intBox.getValue());
-  print(doubleBox.getDoubleValue());
+//   print(intBox.getValue());
+//   print(doubleBox.getDoubleValue());
 
-  // These are now also valid with the loosened constraints
-  final stringBox = NumericBox<String>('hello');
-  final boolBox = NumericBox<bool>(true);
+//   // These are now also valid with the loosened constraints
+//   final stringBox = NumericBox<String>('hello');
+//   final boolBox = NumericBox<bool>(true);
 
-  print(stringBox.getValue());
-  print(boolBox.getValue());
+//   print(stringBox.getValue());
+//   print(boolBox.getValue());
 
-  // These are still valid with the loosened constraints
-  printComparable<int>(123);
-  printComparable<String>('hello');
+//   // These are still valid with the loosened constraints
+//   printComparable<int>(123);
+//   printComparable<String>('hello');
 
-  // These are now also valid with the loosened constraints
-  printComparable<bool>(true);
-  printComparable<List<int>>([1, 2, 3]);
-}
+//   // These are now also valid with the loosened constraints
+//   printComparable<bool>(true);
+//   printComparable<List<int>>([1, 2, 3]);
+// }

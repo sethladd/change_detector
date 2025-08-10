@@ -18,15 +18,15 @@ void printComparable<E extends Comparable<E>>(E item) {
 }
 
 /// Usage example
-void main() {
-  // These are valid with the current constraints
-  final intBox = NumericBox<int>(42);
-  final doubleBox = NumericBox<double>(3.14);
+// void main() {
+//   // These are valid with the current constraints
+//   final intBox = NumericBox<int>(42);
+//   final doubleBox = NumericBox<double>(3.14);
 
-  print(intBox.getValue());
-  print(doubleBox.getDoubleValue());
+//   print(intBox.getValue());
+//   print(doubleBox.getDoubleValue());
 
-  // These are valid with the current constraints
-  printComparable<String>('hello');
-  printComparable<DateTime>(DateTime.now());
-}
+//   // These are valid with the current constraints
+//   printComparable<String>('hello');
+//   printComparable<DateTime>(DateTime.now());
+// }

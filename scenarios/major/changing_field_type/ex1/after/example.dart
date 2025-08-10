@@ -25,23 +25,23 @@ class Configuration {
 }
 
 /// Usage example
-void main() {
-  final config = Configuration(
-    defaultValue: 'default',
-    timeout: 1000,
-    allowedValues: ['value1', 'value2'],
-    properties: {'name': 'Config1', 'enabled': 'true', 'count': '42'},
-  );
+// void main() {
+//   final config = Configuration(
+//     defaultValue: 'default',
+//     timeout: 1000,
+//     allowedValues: ['value1', 'value2'],
+//     properties: {'name': 'Config1', 'enabled': 'true', 'count': '42'},
+//   );
 
-  // These would now fail to compile:
-  // config.defaultValue = 100;        // Error: int can't be assigned to String
-  // config.timeout = 3.14;            // Error: double can't be assigned to int
-  // config.allowedValues.add(false);  // Error: bool can't be assigned to String
-  // config.properties['newProp'] = DateTime.now(); // Error: DateTime can't be assigned to String
+//   // These would now fail to compile:
+//   // config.defaultValue = 100;        // Error: int can't be assigned to String
+//   // config.timeout = 3.14;            // Error: double can't be assigned to int
+//   // config.allowedValues.add(false);  // Error: bool can't be assigned to String
+//   // config.properties['newProp'] = DateTime.now(); // Error: DateTime can't be assigned to String
 
-  // Need to use compatible types:
-  config.defaultValue = 'new default';
-  config.timeout = 2000;
-  config.allowedValues.add('value3');
-  config.properties['newProp'] = 'new value';
-}
+//   // Need to use compatible types:
+//   config.defaultValue = 'new default';
+//   config.timeout = 2000;
+//   config.allowedValues.add('value3');
+//   config.properties['newProp'] = 'new value';
+// }

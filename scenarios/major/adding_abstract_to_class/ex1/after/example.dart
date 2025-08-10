@@ -7,19 +7,19 @@ abstract class Shape {
 }
 
 /// Usage example
-void main() {
-  // This is no longer valid - Shape cannot be instantiated
-  // final shape = Shape();  // Error!
+// void main() {
+//   // This is no longer valid - Shape cannot be instantiated
+//   // final shape = Shape();  // Error!
 
-  // Must use a concrete subclass instead
-  final circle = Circle();
-  circle.draw();
-}
+//   // Must use a concrete subclass instead
+//   final circle = Circle();
+//   circle.draw();
+// }
 
-/// Concrete subclass
-class Circle extends Shape {
-  @override
-  void draw() {
-    // Implementation
-  }
-}
+// /// Concrete subclass
+// class Circle extends Shape {
+//   @override
+//   void draw() {
+//     // Implementation
+//   }
+// }

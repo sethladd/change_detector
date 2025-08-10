@@ -13,13 +13,13 @@ extension ObjectExtension on String {
 }
 
 /// Usage example
-void main() {
-  // Extension now only works on String
-  'Hello'.printInfo(); // Still works
+// void main() {
+//   // Extension now only works on String
+//   'Hello'.printInfo(); // Still works
 
-  // These no longer compile - MAJOR breaking change
-  // 123.printInfo();        // Error: The method 'printInfo' isn't defined for the type 'int'
-  // true.printInfo();       // Error: The method 'printInfo' isn't defined for the type 'bool'
-  // [1, 2, 3].printInfo();  // Error: The method 'printInfo' isn't defined for the type 'List<int>'
-  // {'key': 'value'}.printInfo(); // Error: The method 'printInfo' isn't defined for the type 'Map<String, String>'
-}
+//   // These no longer compile - MAJOR breaking change
+//   // 123.printInfo();        // Error: The method 'printInfo' isn't defined for the type 'int'
+//   // true.printInfo();       // Error: The method 'printInfo' isn't defined for the type 'bool'
+//   // [1, 2, 3].printInfo();  // Error: The method 'printInfo' isn't defined for the type 'List<int>'
+//   // {'key': 'value'}.printInfo(); // Error: The method 'printInfo' isn't defined for the type 'Map<String, String>'
+// }

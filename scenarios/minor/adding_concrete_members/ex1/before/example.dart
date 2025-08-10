@@ -52,16 +52,16 @@ class Product implements Identifiable {
 }
 
 /// Usage example
-void main() {
-  final user = User('Alice', 30);
-  print(user.displayName);
-  user.incrementAge();
+// void main() {
+//   final user = User('Alice', 30);
+//   print(user.displayName);
+//   user.incrementAge();
 
-  final employee = Employee('Bob', 35, 'Engineering');
-  print(employee.displayName);
+//   final employee = Employee('Bob', 35, 'Engineering');
+//   print(employee.displayName);
 
-  final product = Product('P123', 'Widget');
-  print(product.getId());
+//   final product = Product('P123', 'Widget');
+//   print(product.getId());
 
-  Logger.log('Created user: $user');
-}
+//   Logger.log('Created user: $user');
+// }

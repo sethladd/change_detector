@@ -31,18 +31,18 @@ class DataProcessor {
 }
 
 /// Usage example
-void main() {
-  // These would now fail to compile:
-  // print(formatText('Hello', '>> ', uppercase: true)); // Error: Too many positional arguments
-  // logMessage('System started', 'SYSTEM', 1);          // Error: String can't be assigned to int
-  // processor.process('data123', validate: true, timeout: 2000); // Error: Named parameter not found
-  // processor.analyze('sample', 3, true);               // Error: Too many positional arguments
+// void main() {
+//   // These would now fail to compile:
+//   // print(formatText('Hello', '>> ', uppercase: true)); // Error: Too many positional arguments
+//   // logMessage('System started', 'SYSTEM', 1);          // Error: String can't be assigned to int
+//   // processor.process('data123', validate: true, timeout: 2000); // Error: Named parameter not found
+//   // processor.analyze('sample', 3, true);               // Error: Too many positional arguments
 
-  // Need to use the new signatures:
-  print(formatText('Hello', uppercase: true));
-  logMessage('System started', 1);
+//   // Need to use the new signatures:
+//   print(formatText('Hello', uppercase: true));
+//   logMessage('System started', 1);
 
-  final processor = DataProcessor();
-  processor.process('data123', validate: true);
-  processor.analyze('sample', 3);
-}
+//   final processor = DataProcessor();
+//   processor.process('data123', validate: true);
+//   processor.analyze('sample', 3);
+// }

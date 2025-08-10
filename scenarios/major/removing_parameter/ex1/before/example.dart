@@ -33,11 +33,11 @@ class DataProcessor {
 }
 
 /// Usage example
-void main() {
-  print(formatText('Hello', '>> ', uppercase: true));
-  logMessage('System started', 'SYSTEM', 1);
+// void main() {
+//   print(formatText('Hello', '>> ', uppercase: true));
+//   logMessage('System started', 'SYSTEM', 1);
 
-  final processor = DataProcessor();
-  processor.process('data123', validate: true, timeout: 2000);
-  processor.analyze('sample', 3, true);
-}
+//   final processor = DataProcessor();
+//   processor.process('data123', validate: true, timeout: 2000);
+//   processor.analyze('sample', 3, true);
+// }

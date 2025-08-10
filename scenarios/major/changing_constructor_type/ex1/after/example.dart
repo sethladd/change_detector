@@ -3,8 +3,8 @@ library example;
 
 /// A base class with a constructor changed to factory
 class Widget {
-  final String id;
-  final bool visible;
+  final String id = '';
+  final bool visible = true;
 
   /// Changed to a factory constructor - MAJOR breaking change
   factory Widget({required String id, bool visible = true}) {
@@ -37,9 +37,9 @@ class _WidgetImpl implements Widget {
 // }
 
 /// Usage example
-void main() {
-  final widget = Widget(id: 'widget1');
-  print('Widget created: ${widget.id}');
+// void main() {
+//   final widget = Widget(id: 'widget1');
+//   print('Widget created: ${widget.id}');
 
-  // Can no longer create Button that extends Widget
-}
+//   // Can no longer create Button that extends Widget
+// }

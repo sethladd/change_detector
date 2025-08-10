@@ -31,23 +31,23 @@ class User {
 }
 
 /// Usage example
-void main() {
-  final user = User('Alice', 30);
+// void main() {
+//   final user = User('Alice', 30);
 
-  // These would now fail to compile:
-  // print(user.name);         // Error: The getter 'name' isn't defined for the type 'User'
-  // print(user.age);          // Error: The getter 'age' isn't defined for the type 'User'
-  // user.incrementAge();      // Error: The method 'incrementAge' isn't defined for the type 'User'
-  // print(user.isAdult);      // Error: The getter 'isAdult' isn't defined for the type 'User'
-  // user.displayName = '...'; // Error: The setter 'displayName' isn't defined for the type 'User'
-  // User.createDefault();     // Error: The method 'createDefault' isn't defined for the class 'User'
+//   // These would now fail to compile:
+//   // print(user.name);         // Error: The getter 'name' isn't defined for the type 'User'
+//   // print(user.age);          // Error: The getter 'age' isn't defined for the type 'User'
+//   // user.incrementAge();      // Error: The method 'incrementAge' isn't defined for the type 'User'
+//   // print(user.isAdult);      // Error: The getter 'isAdult' isn't defined for the type 'User'
+//   // user.displayName = '...'; // Error: The setter 'displayName' isn't defined for the type 'User'
+//   // User.createDefault();     // Error: The method 'createDefault' isn't defined for the class 'User'
 
-  // Need to use the new names:
-  print(user.fullName);
-  print(user.years);
-  user.addYear();
-  print(user.isMature);
-  user.userName = 'Alice Smith';
+//   // Need to use the new names:
+//   print(user.fullName);
+//   print(user.years);
+//   user.addYear();
+//   print(user.isMature);
+//   user.userName = 'Alice Smith';
 
-  final defaultUser = User.createNew();
-}
+//   final defaultUser = User.createNew();
+// }

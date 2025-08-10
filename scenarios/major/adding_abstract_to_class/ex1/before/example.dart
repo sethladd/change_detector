@@ -8,9 +8,9 @@ class Shape {
   }
 }
 
-/// Usage example
-void main() {
-  // This is valid because Shape is concrete
-  final shape = Shape();
-  shape.draw();
-}
+// /// Usage example
+// void main() {
+//   // This is valid because Shape is concrete
+//   final shape = Shape();
+//   shape.draw();
+// }

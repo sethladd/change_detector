@@ -24,17 +24,17 @@ class Configuration {
 }
 
 /// Usage example
-void main() {
-  final config = Configuration(
-    defaultValue: 'default',
-    timeout: 1000,
-    allowedValues: ['value1', 'value2', 123, true],
-    properties: {'name': 'Config1', 'enabled': true, 'count': 42},
-  );
+// void main() {
+//   final config = Configuration(
+//     defaultValue: 'default',
+//     timeout: 1000,
+//     allowedValues: ['value1', 'value2', 123, true],
+//     properties: {'name': 'Config1', 'enabled': true, 'count': 42},
+//   );
 
-  // These are valid with the current field types
-  config.defaultValue = 100;
-  config.timeout = 3.14;
-  config.allowedValues.add(false);
-  config.properties['newProp'] = DateTime.now();
-}
+//   // These are valid with the current field types
+//   config.defaultValue = 100;
+//   config.timeout = 3.14;
+//   config.allowedValues.add(false);
+//   config.properties['newProp'] = DateTime.now();
+// }
