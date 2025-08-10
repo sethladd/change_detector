@@ -20,10 +20,10 @@ Design:
 * A separate directory just for test scenarios.
 * One sub directory for major changes.
 * One sub directory for minor changes.
-* One directory named for the change itself.
-* Then, one directory for a particular instance of a change.
-  * Note that one change type can have multiple examples of a change.
-    So we separate each example of a change.
+* One sub directory named for the change itself.
+* Then, one sub directory for a particular instance of a change.
+  * Note that one change _type_ can have multiple examples of a change.
+    So we separate each example of a change into its own sub directory.
 * Inside the change instance directory, there should be two Dart libraries,
   each one in their own subdirectory.
   * A _before_ library. This contains the library before the change.
@@ -33,6 +33,8 @@ Design:
   with.
 * Inside the directory for the change type, add a README.md
   that describes the change.
+* Each example Dart library is simple and doesn't have to necessarily
+  do anything useful.
 
 An example directory layout for a change:
   scenarios/major/changing_a_parameter_type/ex1/before/example.dart
