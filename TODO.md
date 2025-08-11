@@ -30,5 +30,7 @@
   - Fully implemented. Removing a bound is MINOR and changing to a less restrictive bound (supertype) is also MINOR.
 - [x] Fix ScenarioRunner to detect multiple changes in an example file
   - Updated to scan for all MAJOR and MINOR changes in code comments and verify results more thoroughly
+- [x] Create formal catalog of API changes in YAML format
+  - Created a comprehensive catalog at lib/src/change_catalog.yaml with unique identifiers for all change types
 - [ ] (Minor) Allow return types to change to a subtype
   - Requires deep type analysis to check for subtype relationships. Currently, any change is treated as MAJOR.

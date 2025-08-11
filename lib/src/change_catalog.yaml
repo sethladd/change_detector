@@ -1,0 +1,196 @@
+# Change Detector - API Change Catalog
+# This file catalogs all types of API changes that can be detected
+# Each change has a unique identifier, category, short description, and detailed description
+
+changes:
+  # Major Changes - Breaking changes requiring a major version bump
+  - id: Major.1
+    category: major
+    title: Removing a declaration
+    description: A public top-level class, mixin, extension, enum, function, type alias, or variable is removed from the API.
+
+  - id: Major.2
+    category: major
+    title: Renaming a declaration
+    description: A public top-level declaration is renamed, making it inaccessible under its previous name.
+
+  - id: Major.3
+    category: major
+    title: Changing a variable's type
+    description: The type of a public variable is changed to an incompatible type that is not a supertype of the old type.
+
+  - id: Major.4
+    category: major
+    title: Changing a constant value
+    description: The value of a public const-declared variable is changed, which can break code relying on the previous value.
+
+  - id: Major.5
+    category: major
+    title: Adding abstract to class
+    description: A concrete, instantiable public class is made abstract, preventing consumers from creating instances directly.
+
+  - id: Major.6
+    category: major
+    title: Incompatible superclass change
+    description: The superclass of a public class is changed, and the new superclass does not provide a superset of the original superclass's public instance members.
+
+  - id: Major.7
+    category: major
+    title: Adding interface with abstract members
+    description: A super-interface is added to a public class that introduces new abstract members, breaking consumers who implement the class's interface.
+
+  - id: Major.8
+    category: major
+    title: Changing mixin constraints
+    description: A new, more restrictive superclass constraint (an "on" clause) is added to a public mixin, preventing it from being applied in existing use cases.
+
+  - id: Major.9
+    category: major
+    title: Changing an extension's target
+    description: The target type ("on" clause) of a public extension is changed to a more restrictive type, causing it to no longer apply to types it previously did.
+
+  - id: Major.10
+    category: major
+    title: Changing a typedef
+    description: The underlying type of a public typedef is changed to a new type that is not a subtype of the original.
+
+  - id: Major.11
+    category: major
+    title: Removing a member
+    description: A public method, operator, field, getter, or setter is removed from a class, mixin, or extension.
+
+  - id: Major.12
+    category: major
+    title: Renaming a member
+    description: A public method, operator, field, getter, or setter is renamed, making it inaccessible under its previous name.
+
+  - id: Major.13
+    category: major
+    title: Changing member scope
+    description: A member is changed from static to instance, or vice-versa, changing how it must be accessed.
+
+  - id: Major.14
+    category: major
+    title: Making field final
+    description: A mutable public field (one with a public setter) is changed to be final or const, effectively removing the setter.
+
+  - id: Major.15
+    category: major
+    title: Changing field type
+    description: The type of a public field is changed to an incompatible type that is not a subtype (for getter) or supertype (for setter) of the old type.
+
+  - id: Major.16
+    category: major
+    title: Adding required parameter
+    description: A new required parameter (either positional or named) is added to a public function, method, or constructor.
+
+  - id: Major.17
+    category: major
+    title: Making parameter required
+    description: An existing optional parameter is changed to be required, breaking existing code that omits this parameter.
+
+  - id: Major.18
+    category: major
+    title: Removing parameter
+    description: A parameter is removed from a public function, method, or constructor, breaking existing code that provides this parameter.
+
+  - id: Major.19
+    category: major
+    title: Renaming named parameter
+    description: A named parameter is renamed, breaking existing code that uses the previous parameter name.
+
+  - id: Major.20
+    category: major
+    title: Changing parameter type non-supertype
+    description: A parameter's type is changed to a non-supertype, preventing consumers from passing values that were previously acceptable.
+
+  - id: Major.21
+    category: major
+    title: Changing return type non-subtype
+    description: The return type of a function or getter is changed to a type that is not a subtype of the original return type.
+
+  - id: Major.22
+    category: major
+    title: Removing constructor
+    description: A public constructor is removed from a class, breaking code that instantiates the class using this constructor.
+
+  - id: Major.23
+    category: major
+    title: Changing constructor type
+    description: A generative constructor is changed to a factory constructor, preventing subclasses from being able to call super().
+
+  - id: Major.24
+    category: major
+    title: Changing type parameters
+    description: Adding or removing a type parameter from a public generic class, mixin, extension, or function.
+
+  - id: Major.25
+    category: major
+    title: Tightening type parameter bound
+    description: Making a type parameter's bound more restrictive, breaking code that used the type with arguments that no longer satisfy the bound.
+
+  - id: Major.26
+    category: major
+    title: Removing enum value
+    description: An enum value is removed, breaking code that references this specific value.
+
+  - id: Major.27
+    category: major
+    title: Renaming enum value
+    description: An enum value is renamed, making it inaccessible under its previous name.
+
+  - id: Major.28
+    category: major
+    title: Changing enum values
+    description: Reordering enum values, which changes the public index of each value and breaks code relying on these indices.
+
+  # Minor Changes - Backward-compatible changes requiring a minor version bump
+  - id: Minor.1
+    category: minor
+    title: Adding declaration
+    description: Introducing a new public class, mixin, extension, enum, type alias (typedef), function, or variable to the API.
+
+  - id: Minor.2
+    category: minor
+    title: Adding concrete members
+    description: Adding a new public concrete instance method, getter, setter, field, or static member to an existing class, mixin, or extension.
+
+  - id: Minor.3
+    category: minor
+    title: Adding constructor
+    description: Adding a new public constructor (named or factory) to an existing class.
+
+  - id: Minor.4
+    category: minor
+    title: Adding enum value
+    description: Adding a new value to an existing public enum.
+
+  - id: Minor.5
+    category: minor
+    title: Adding optional parameter
+    description: Adding a new optional parameter (positional or named) to a public function, method, or constructor.
+
+  - id: Minor.6
+    category: minor
+    title: Making required parameter optional
+    description: Changing an existing required parameter to be optional, while maintaining backward compatibility.
+
+  - id: Minor.7
+    category: minor
+    title: Loosening type constraints
+    description: Making a type parameter's bound less restrictive or removing constraints, allowing more valid type arguments.
+
+  - id: Minor.8
+    category: minor
+    title: Changing return type to subtype
+    description: Changing the return type of a public function or getter to a subtype of the original type.
+
+  - id: Minor.9
+    category: minor
+    title: Deprecating API
+    description: Marking a part of the public API as deprecated using the @deprecated annotation, signaling future removal.
+
+  - id: Minor.10
+    category: minor
+    title: Adding extension methods
+    description: Adding new extension methods to an existing extension or creating a new extension for an existing type.
