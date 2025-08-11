@@ -46,28 +46,6 @@ class ScenarioRunner {
       final actualChangeType =
           await runChangeDetector(beforeFile.path, afterFile.path);
 
-      // Handle known limitations in the change detector
-      final scenarioPath = '$categoryName/$scenarioName';
-      if (scenarioPath == 'major/changing_extension_target' &&
-          actualChangeType == ChangeType.none) {
-        print(
-            'KNOWN LIMITATION: change_detector does not detect changes to extension target types');
-        continue;
-      }
-      if (scenarioPath == 'minor/adding_extension_methods' &&
-          actualChangeType == ChangeType.none) {
-        print(
-            'KNOWN LIMITATION: change_detector does not detect adding methods to extensions');
-        continue;
-      }
-      if (scenarioPath == 'minor/adding_concrete_members' &&
-          actualChangeType == ChangeType.minor &&
-          expectedChangeType == ChangeType.major) {
-        print(
-            'SPECIAL CASE: adding_concrete_members example contains both MINOR and MAJOR changes');
-        continue;
-      }
-
       // Verify results
       expect(actualChangeType, expectedChangeType,
           reason:
