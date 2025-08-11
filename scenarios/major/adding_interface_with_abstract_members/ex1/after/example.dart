@@ -6,7 +6,7 @@ abstract class Loggable {
   void log(String message);
 }
 
-/// Class now implements Loggable - MAJOR breaking change
+/// Class now implements Loggable - MAJOR breaking change [Major.7]
 /// This introduces a new abstract method requirement
 class DataProcessor implements Loggable {
   @override

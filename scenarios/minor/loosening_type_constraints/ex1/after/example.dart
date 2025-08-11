@@ -1,7 +1,7 @@
 // Simple example demonstrating generic types with loosened constraints
 library example;
 
-/// A generic class with a loosened type parameter constraint - MINOR change
+/// A generic class with a loosened type parameter constraint - MINOR change [Minor.7]
 /// Changed from <T extends num> to <T>
 class NumericBox<T> {
   final T value;
@@ -19,7 +19,7 @@ class NumericBox<T> {
   }
 }
 
-/// A generic function with a loosened type parameter constraint - MINOR change
+/// A generic function with a loosened type parameter constraint - MINOR change [Minor.7]
 /// Changed from <E extends Comparable<E>> to <E>
 void printComparable<E>(E item) {
   print('Item: $item');

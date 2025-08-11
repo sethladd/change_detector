@@ -7,11 +7,11 @@ class User {
 
   User(this.name); // age parameter removed
 
-  // incrementAge method removed - MAJOR breaking change
+  // incrementAge method removed - MAJOR breaking change [Major.11]
 
-  // isAdult getter removed - MAJOR breaking change
+  // isAdult getter removed - MAJOR breaking change [Major.11]
 
-  // displayName setter removed - MAJOR breaking change
+  // displayName setter removed - MAJOR breaking change [Major.11]
 
-  // age field removed - MAJOR breaking change
+  // age field removed - MAJOR breaking change [Major.11]
 }

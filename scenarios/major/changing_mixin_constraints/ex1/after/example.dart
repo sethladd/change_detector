@@ -15,7 +15,7 @@ class Other {
   }
 }
 
-/// A mixin with added constraint - MAJOR breaking change
+/// A mixin with added constraint - MAJOR breaking change [Major.8]
 /// Now can only be used with classes that extend Base
 mixin Logger on Base {
   void log(String message) {
@@ -33,7 +33,7 @@ class ProcessorWithLogging extends Base with Logger {
   }
 }
 
-/// This class is no longer valid - MAJOR breaking change
+/// This class is no longer valid - MAJOR breaking change [Major.8]
 /// Error: 'Logger' can't be mixed onto 'Other' because 'Other' doesn't extend 'Base'
 // class OtherWithLogging extends Other with Logger {
 //   void doSomething() {

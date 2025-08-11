@@ -1,7 +1,7 @@
 // Simple example demonstrating functions with renamed named parameters
 library example;
 
-/// A function with renamed named parameters - MAJOR breaking change
+/// A function with renamed named parameters - MAJOR breaking change [Major.19]
 void configure({String? label, bool enabled = true, int duration = 1000}) {
   // name -> label, timeout -> duration
   print(
@@ -10,7 +10,7 @@ void configure({String? label, bool enabled = true, int duration = 1000}) {
 
 /// A class with methods having renamed named parameters
 class HttpClient {
-  /// Method with renamed named parameters - MAJOR breaking change
+  /// Method with renamed named parameters - MAJOR breaking change [Major.19]
   Future<void> request({
     required String uri, // url -> uri
     String httpMethod = 'GET', // method -> httpMethod

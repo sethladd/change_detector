@@ -1,12 +1,12 @@
 // Simple example demonstrating functions with removed parameters
 library example;
 
-/// Removed the 'prefix' parameter - MAJOR breaking change
+/// Removed the 'prefix' parameter - MAJOR breaking change [Major.18]
 String formatText(String text, {bool uppercase = false}) {
   return uppercase ? text.toUpperCase() : text;
 }
 
-/// Removed the 'category' parameter - MAJOR breaking change
+/// Removed the 'category' parameter - MAJOR breaking change [Major.18]
 void logMessage(String message, [int level = 0]) {
   final levelStr = level > 0 ? '(Level $level) ' : '';
   print('$levelStr$message');
@@ -14,7 +14,7 @@ void logMessage(String message, [int level = 0]) {
 
 /// A class with methods having removed parameters
 class DataProcessor {
-  /// Removed the 'timeout' parameter - MAJOR breaking change
+  /// Removed the 'timeout' parameter - MAJOR breaking change [Major.18]
   String process(String data, {required bool validate}) {
     if (validate) {
       // Validation logic
@@ -23,7 +23,7 @@ class DataProcessor {
     return 'Processed: $data';
   }
 
-  /// Removed the 'detailed' parameter - MAJOR breaking change
+  /// Removed the 'detailed' parameter - MAJOR breaking change [Major.18]
   void analyze(String data, int depth) {
     // Analysis logic
     print('Analyzing $data with depth $depth');

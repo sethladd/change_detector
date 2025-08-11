@@ -1,12 +1,12 @@
 // Simple example demonstrating an enum with removed values
 library example;
 
-/// An enum with removed values - MAJOR breaking change
+/// An enum with removed values - MAJOR breaking change [Major.26]
 enum Status {
   pending,
   inProgress,
   completed,
-  // cancelled value removed - MAJOR breaking change
+  // cancelled value removed - MAJOR breaking change [Major.26]
   failed
 }
 

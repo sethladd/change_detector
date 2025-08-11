@@ -1,7 +1,7 @@
 // Simple example demonstrating a class made abstract
 library example;
 
-/// Now abstract - MAJOR breaking change
+/// Now abstract - MAJOR breaking change [Major.5]
 abstract class Shape {
   void draw(); // Now abstract method with no implementation
 }

@@ -1,7 +1,7 @@
 // Simple example demonstrating extensions with added methods
 library example;
 
-/// An extension on String with added methods - MINOR changes
+/// An extension on String with added methods - MINOR change [Minor.10]s
 extension StringExtension on String {
   String capitalize() {
     if (isEmpty) return this;
@@ -10,21 +10,21 @@ extension StringExtension on String {
 
   bool get isNullOrEmpty => isEmpty;
 
-  // Added new method - MINOR change
+  // Added new method - MINOR change [Minor.10]
   String truncate(int maxLength) {
     if (length <= maxLength) return this;
     return '${substring(0, maxLength)}...';
   }
 
-  // Added new getter - MINOR change
+  // Added new getter - MINOR change [Minor.10]
   bool get isEmail => contains('@') && contains('.');
 
-  // Added new setter - MINOR change
+  // Added new setter - MINOR change [Minor.10]
   set debugName(String name) {
     print('Debug: $name = $this');
   }
 
-  // Added static method - MINOR change
+  // Added static method - MINOR change [Minor.10]
   static String join(List<String> strings, String separator) {
     return strings.join(separator);
   }
@@ -34,10 +34,10 @@ extension StringExtension on String {
 extension IntExtension on int {
   bool isTheAnswer() => this == 42;
 
-  // Added new method - MINOR change
+  // Added new method - MINOR change [Minor.10]
   int squared() => this * this;
 
-  // Added new getter - MINOR change
+  // Added new getter - MINOR change [Minor.10]
   bool get isPositive => this > 0;
 }
 

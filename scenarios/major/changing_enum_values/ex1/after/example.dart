@@ -1,16 +1,16 @@
 // Simple example demonstrating enums with renamed/reordered values
 library example;
 
-/// An enum with renamed values - MAJOR breaking change
+/// An enum with renamed values - MAJOR breaking change [Major.28]
 enum Status {
-  waiting, // renamed from pending - MAJOR breaking change
+  waiting, // renamed from pending - MAJOR breaking change [Major.28]
   active,
   completed,
-  aborted, // renamed from cancelled - MAJOR breaking change
+  aborted, // renamed from cancelled - MAJOR breaking change [Major.28]
   failed
 }
 
-/// An enum with reordered values - MAJOR breaking change
+/// An enum with reordered values - MAJOR breaking change [Major.28]
 enum LogLevel {
   info, // now index 0 (was index 1)
   debug, // now index 1 (was index 0)

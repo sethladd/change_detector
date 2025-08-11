@@ -15,7 +15,7 @@ class DifferentBase {
   }
 }
 
-/// Class now extends DifferentBase - MAJOR breaking change
+/// Class now extends DifferentBase - MAJOR breaking change [Major.6]
 /// The superclass lacks the same members as the original Base
 class Child extends DifferentBase {
   Child(int id) : super(id);

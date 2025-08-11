@@ -3,17 +3,17 @@ library example;
 
 /// A class with fields whose types have changed incompatibly
 class Configuration {
-  /// Changed from Object to String - MAJOR breaking change
+  /// Changed from Object to String - MAJOR breaking change [Major.15]
   String defaultValue;
 
-  /// Changed from num to int - MAJOR breaking change
+  /// Changed from num to int - MAJOR breaking change [Major.15]
   /// (int is a subtype of num, but this breaks code that assigns double values)
   int timeout;
 
-  /// Changed from List<dynamic> to List<String> - MAJOR breaking change
+  /// Changed from List<dynamic> to List<String> - MAJOR breaking change [Major.15]
   List<String> allowedValues;
 
-  /// Changed from Map<String, dynamic> to Map<String, String> - MAJOR breaking change
+  /// Changed from Map<String, dynamic> to Map<String, String> - MAJOR breaking change [Major.15]
   Map<String, String> properties;
 
   Configuration({

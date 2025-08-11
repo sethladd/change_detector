@@ -1,30 +1,30 @@
 // Simple example demonstrating a class with renamed members
 library example;
 
-/// A class with renamed members - MAJOR breaking changes
+/// A class with renamed members - MAJOR breaking change [Major.12]s
 class User {
-  /// Renamed from 'name' - MAJOR breaking change
+  /// Renamed from 'name' - MAJOR breaking change [Major.12]
   String fullName;
 
-  /// Renamed from 'age' - MAJOR breaking change
+  /// Renamed from 'age' - MAJOR breaking change [Major.12]
   int years;
 
   User(this.fullName, this.years);
 
-  /// Renamed from 'incrementAge' - MAJOR breaking change
+  /// Renamed from 'incrementAge' - MAJOR breaking change [Major.12]
   void addYear() {
     years++;
   }
 
-  /// Renamed from 'isAdult' - MAJOR breaking change
+  /// Renamed from 'isAdult' - MAJOR breaking change [Major.12]
   bool get isMature => years >= 18;
 
-  /// Renamed from 'displayName' - MAJOR breaking change
+  /// Renamed from 'displayName' - MAJOR breaking change [Major.12]
   set userName(String value) {
     fullName = value;
   }
 
-  /// Renamed from 'createDefault' - MAJOR breaking change
+  /// Renamed from 'createDefault' - MAJOR breaking change [Major.12]
   static User createNew() {
     return User('Default', 30);
   }

@@ -3,10 +3,10 @@ library example;
 
 /// A class with fields made final
 class Configuration {
-  /// Changed to final - MAJOR breaking change
+  /// Changed to final - MAJOR breaking change [Major.14]
   final String name;
 
-  /// Changed to final - MAJOR breaking change
+  /// Changed to final - MAJOR breaking change [Major.14]
   final int timeout;
 
   Configuration(this.name, this.timeout);

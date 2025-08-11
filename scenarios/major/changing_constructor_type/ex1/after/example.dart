@@ -6,7 +6,7 @@ class Widget {
   final String id = '';
   final bool visible = true;
 
-  /// Changed to a factory constructor - MAJOR breaking change
+  /// Changed to a factory constructor - MAJOR breaking change [Major.23]
   factory Widget({required String id, bool visible = true}) {
     print('Creating widget $id');
     return _WidgetImpl(id: id, visible: visible);
@@ -25,7 +25,7 @@ class _WidgetImpl implements Widget {
 }
 
 /// A subclass that extends Widget
-/// This will now fail to compile - MAJOR breaking change
+/// This will now fail to compile - MAJOR breaking change [Major.23]
 // class Button extends Widget {
 //   final String label;
 //

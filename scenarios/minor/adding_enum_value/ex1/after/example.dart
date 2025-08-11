@@ -1,7 +1,7 @@
 // Simple example demonstrating an enum with added values
 library example;
 
-/// An enum with an added value - MINOR change
+/// An enum with an added value - MINOR change [Minor.4]
 enum Status {
   pending,
   active,

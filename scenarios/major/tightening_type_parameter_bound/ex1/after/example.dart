@@ -1,7 +1,7 @@
 // Simple example demonstrating generic classes with tightened type parameter bounds
 library example;
 
-/// A generic container class with added restrictive bound - MAJOR breaking change
+/// A generic container class with added restrictive bound - MAJOR breaking change [Major.25]
 class Container<T extends num> {
   final T value;
 
@@ -10,7 +10,7 @@ class Container<T extends num> {
   T getValue() => value;
 }
 
-/// A generic function with added restrictive bound - MAJOR breaking change
+/// A generic function with added restrictive bound - MAJOR breaking change [Major.25]
 void process<E extends Comparable<E>>(E item) {
   print(item);
 }

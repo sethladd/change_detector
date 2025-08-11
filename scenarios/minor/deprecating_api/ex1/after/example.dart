@@ -8,7 +8,7 @@ class UserManager {
     // Implementation
   }
 
-  /// Method marked as deprecated - MINOR change
+  /// Method marked as deprecated - MINOR change [Minor.9]
   @Deprecated('Use updateUserProfile instead')
   void updateUser(String id, String name) {
     // Implementation
@@ -20,7 +20,7 @@ class UserManager {
   }
 }
 
-/// Function marked as deprecated - MINOR change
+/// Function marked as deprecated - MINOR change [Minor.9]
 @Deprecated('Use createFormattedId instead')
 String formatId(int id) {
   return 'ID-$id';
@@ -31,7 +31,7 @@ String createFormattedId(int id) {
   return 'ID-$id';
 }
 
-/// Constant marked as deprecated - MINOR change
+/// Constant marked as deprecated - MINOR change [Minor.9]
 @Deprecated('Use USER_LIMIT instead')
 const int maxUsers = 100;
 

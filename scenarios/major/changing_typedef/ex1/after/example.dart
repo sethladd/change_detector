@@ -1,10 +1,10 @@
 // Simple example demonstrating typedefs with incompatible changes
 library example;
 
-/// Changed from String Function(String) to int Function(String) - MAJOR breaking change
+/// Changed from String Function(String) to int Function(String) - MAJOR breaking change [Major.10]
 typedef StringProcessor = int Function(String input);
 
-/// Changed from Map<String, dynamic> to Map<String, String> - MAJOR breaking change
+/// Changed from Map<String, dynamic> to Map<String, String> - MAJOR breaking change [Major.10]
 typedef JsonMap = Map<String, String>;
 
 /// A class using the typedefs

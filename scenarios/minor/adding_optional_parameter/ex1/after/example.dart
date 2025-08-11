@@ -1,14 +1,14 @@
 // Simple example demonstrating function with added optional parameter
 library example;
 
-/// Simple function with added optional parameter - MINOR change
+/// Simple function with added optional parameter - MINOR change [Minor.5]
 String greet(String name, {bool formal = false}) {
   return formal ? 'Greetings, $name.' : 'Hello, $name!';
 }
 
 /// Class with a simple method with added optional parameter
 class Example {
-  /// Method with added optional parameter - MINOR change
+  /// Method with added optional parameter - MINOR change [Minor.5]
   String process(String input, {bool uppercase = false}) {
     return uppercase ? input.toUpperCase() : input;
   }

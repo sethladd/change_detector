@@ -9,12 +9,12 @@ class User {
   /// Default constructor (unchanged)
   User(this.name, this.age);
 
-  /// Added named constructor - MINOR change
+  /// Added named constructor - MINOR change [Minor.3]
   User.guest()
       : name = 'Guest',
         age = 0;
 
-  /// Added factory constructor - MINOR change
+  /// Added factory constructor - MINOR change [Minor.3]
   factory User.fromMap(Map<String, dynamic> map) {
     return User(
       map['name'] as String? ?? 'Unknown',

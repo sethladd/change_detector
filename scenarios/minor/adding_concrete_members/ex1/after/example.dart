@@ -1,31 +1,31 @@
 // Simple example demonstrating a class with added members
 library example;
 
-/// A class with added members - MINOR changes
+/// A class with added members - MINOR change [Minor.2]s
 class User {
   final String name;
   int age;
 
-  // Added new field - MINOR change
+  // Added new field - MINOR change [Minor.2]
   String? email;
 
   User(this.name, this.age, {this.email});
 
   String get displayName => name;
 
-  // Added new getter - MINOR change
+  // Added new getter - MINOR change [Minor.2]
   bool get isAdult => age >= 18;
 
   void incrementAge() {
     age++;
   }
 
-  // Added new method - MINOR change
+  // Added new method - MINOR change [Minor.2]
   void updateEmail(String newEmail) {
     email = newEmail;
   }
 
-  // Added new setter - MINOR change
+  // Added new setter - MINOR change [Minor.2]
   set displayAge(bool show) {
     // Implementation
   }
@@ -41,15 +41,15 @@ class Logger {
     print('LOG: $message');
   }
 
-  // Added static field - MINOR change
+  // Added static field - MINOR change [Minor.2]
   static bool verbose = false;
 
-  // Added static method - MINOR change
+  // Added static method - MINOR change [Minor.2]
   static void logError(String error) {
     print('ERROR: $error');
   }
 
-  // Added static getter - MINOR change
+  // Added static getter - MINOR change [Minor.2]
   static bool get isVerbose => verbose;
 }
 
