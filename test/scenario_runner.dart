@@ -69,11 +69,45 @@ class ScenarioRunner {
       final actualChangeType = diffResult.changeType;
       final actualReasons = diffResult.reasons;
 
+      // Build a detailed error message for potential test failures
+      final errorMessageBuffer = StringBuffer();
+      errorMessageBuffer.writeln(
+          'Change detector reported ${actualChangeType.name} but expected ${expectedChangeType.name} '
+          'for $categoryName/$scenarioName/$exampleName');
+
+      // Add expected changes to error message
+      if (allExpectedChanges.isNotEmpty) {
+        errorMessageBuffer.writeln('\nExpected changes:');
+        for (final change in allExpectedChanges) {
+          errorMessageBuffer.writeln(
+              '  - ${change.changeType.name.toUpperCase()}: ${change.description}');
+        }
+      } else {
+        errorMessageBuffer.writeln(
+            '\nNo explicit expected changes were found in code comments.');
+      }
+
+      // Add actual changes to error message
+      if (actualReasons.isNotEmpty) {
+        errorMessageBuffer.writeln('\nActual changes detected:');
+        for (final reason in actualReasons) {
+          errorMessageBuffer.writeln('  - $reason');
+        }
+      } else {
+        errorMessageBuffer
+            .writeln('\nNo changes were detected by the API differ.');
+      }
+
+      // Add file paths for reference
+      errorMessageBuffer.writeln('\nFiles compared:');
+      errorMessageBuffer.writeln('  - Before: ${beforeFile.path}');
+      errorMessageBuffer.writeln('  - After: ${afterFile.path}');
+
+      final detailedErrorMessage = errorMessageBuffer.toString();
+
       // Verify that the expected change type (most severe) matches the actual change type
       expect(actualChangeType, expectedChangeType,
-          reason:
-              'Change detector reported ${actualChangeType.name} but expected ${expectedChangeType.name} '
-              'for $categoryName/$scenarioName/$exampleName');
+          reason: detailedErrorMessage);
 
       // For MAJOR changes, verify that at least one major breaking change was detected
       if (expectedChangeType == ChangeType.major) {
@@ -81,7 +115,7 @@ class ScenarioRunner {
             actualReasons.any((reason) => reason.startsWith('MAJOR:'));
         expect(hasMajorReason, true,
             reason:
-                'Expected at least one MAJOR change reason in $categoryName/$scenarioName/$exampleName');
+                'Expected at least one MAJOR change reason but none were found.\n$detailedErrorMessage');
       }
 
       // For MINOR changes, verify that at least one minor change was detected and no major changes
@@ -90,7 +124,7 @@ class ScenarioRunner {
             actualReasons.any((reason) => reason.startsWith('MINOR:'));
         expect(hasMinorReason, true,
             reason:
-                'Expected at least one MINOR change reason in $categoryName/$scenarioName/$exampleName');
+                'Expected at least one MINOR change reason but none were found.\n$detailedErrorMessage');
       }
     }
   }
