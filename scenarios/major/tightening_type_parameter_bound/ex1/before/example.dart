@@ -16,13 +16,13 @@ void process<E>(E item) {
 }
 
 /// Usage example
-void main() {
-  // These are valid with unconstrained type parameters
-  final stringContainer = Container<String>('hello');
-  final numContainer = Container<num>(42);
-  final boolContainer = Container<bool>(true);
+// void main() {
+//   // These are valid with unconstrained type parameters
+//   final stringContainer = Container<String>('hello');
+//   final numContainer = Container<num>(42);
+//   final boolContainer = Container<bool>(true);
 
-  process<String>('hello');
-  process<int>(123);
-  process<bool>(false);
-}
+//   process<String>('hello');
+//   process<int>(123);
+//   process<bool>(false);
+// }
