@@ -42,19 +42,19 @@ extension IntExtension on int {
 }
 
 /// Usage example
-void main() {
-  final name = 'alice smith with a very long name';
-  print(name.capitalize()); // "Alice smith with a very long name"
-  print(name.isNullOrEmpty); // false
-  print(name.truncate(10)); // "alice smit..."
-  print(name.isEmail); // false
-  name.debugName = 'userName';
+// void main() {
+//   final name = 'alice smith with a very long name';
+//   print(name.capitalize()); // "Alice smith with a very long name"
+//   print(name.isNullOrEmpty); // false
+//   print(name.truncate(10)); // "alice smit..."
+//   print(name.isEmail); // false
+//   name.debugName = 'userName';
 
-  final emails = ['user1@example.com', 'user2@example.com'];
-  print(StringExtension.join(emails, ', ')); // Using static method
+//   final emails = ['user1@example.com', 'user2@example.com'];
+//   print(StringExtension.join(emails, ', ')); // Using static method
 
-  final number = 42;
-  print(number.isTheAnswer()); // true
-  print(number.squared()); // 1764
-  print(number.isPositive); // true
-}
+//   final number = 42;
+//   print(number.isTheAnswer()); // true
+//   print(number.squared()); // 1764
+//   print(number.isPositive); // true
+// }

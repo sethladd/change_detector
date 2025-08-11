@@ -8,63 +8,66 @@ import 'package:test/test.dart';
 
 /// Class responsible for running tests on a specific scenario
 class ScenarioRunner {
-    /// Tests a specific scenario by comparing before and after code
+  /// Tests a specific scenario by comparing before and after code
   /// and verifying that the change detector correctly identifies the change type
   Future<void> testScenario(String scenarioPath) async {
     final scenarioName = p.basename(scenarioPath);
     final categoryName = p.basename(p.dirname(scenarioPath));
-    
+
     // Find example directories
     final exampleDirs = Directory(scenarioPath)
         .listSync()
         .whereType<Directory>()
         .where((dir) => p.basename(dir.path).startsWith('ex'))
         .toList();
-    
+
     for (final exampleDir in exampleDirs) {
       final exampleName = p.basename(exampleDir.path);
       final beforeDir = Directory('${exampleDir.path}/before');
       final afterDir = Directory('${exampleDir.path}/after');
-      
+
       if (!beforeDir.existsSync() || !afterDir.existsSync()) {
         fail('Missing before or after directory in $exampleDir');
       }
-      
+
       final beforeFile = File('${beforeDir.path}/example.dart');
       final afterFile = File('${afterDir.path}/example.dart');
-      
+
       if (!beforeFile.existsSync() || !afterFile.existsSync()) {
         fail(
             'Missing example.dart in before or after directory in $exampleDir');
       }
-      
+
       // Extract expected change type from comments in the after file
       final afterCode = afterFile.readAsStringSync();
       final expectedChangeType = extractExpectedChangeType(afterCode);
-      
+
       // Run the change detector
       final actualChangeType =
           await runChangeDetector(beforeFile.path, afterFile.path);
-      
+
       // Handle known limitations in the change detector
       final scenarioPath = '$categoryName/$scenarioName';
-      if (scenarioPath == 'major/changing_extension_target' && actualChangeType == ChangeType.none) {
-        print('KNOWN LIMITATION: change_detector does not detect changes to extension target types');
+      if (scenarioPath == 'major/changing_extension_target' &&
+          actualChangeType == ChangeType.none) {
+        print(
+            'KNOWN LIMITATION: change_detector does not detect changes to extension target types');
         continue;
       }
-      if (scenarioPath == 'minor/adding_extension_methods' && actualChangeType == ChangeType.none) {
-        print('KNOWN LIMITATION: change_detector does not detect adding methods to extensions');
+      if (scenarioPath == 'minor/adding_extension_methods' &&
+          actualChangeType == ChangeType.none) {
+        print(
+            'KNOWN LIMITATION: change_detector does not detect adding methods to extensions');
         continue;
       }
-      if (scenarioPath == 'minor/adding_concrete_members' && actualChangeType == ChangeType.minor && expectedChangeType == ChangeType.major) {
-        print('SPECIAL CASE: adding_concrete_members example contains both MINOR and MAJOR changes');
+      if (scenarioPath == 'minor/adding_concrete_members' &&
+          actualChangeType == ChangeType.minor &&
+          expectedChangeType == ChangeType.major) {
+        print(
+            'SPECIAL CASE: adding_concrete_members example contains both MINOR and MAJOR changes');
         continue;
       }
-      if (scenarioPath == 'minor/adding_enum_value' && actualChangeType == ChangeType.major) {
-        print('SPECIAL CASE: adding_enum_value example has commented out code that change_detector sees as removal');
-        continue;
-      }
-      
+
       // Verify results
       expect(actualChangeType, expectedChangeType,
           reason:

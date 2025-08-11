@@ -17,11 +17,11 @@ extension IntExtension on int {
 }
 
 /// Usage example
-void main() {
-  final name = 'alice';
-  print(name.capitalize()); // "Alice"
-  print(name.isNullOrEmpty); // false
+// void main() {
+//   final name = 'alice';
+//   print(name.capitalize()); // "Alice"
+//   print(name.isNullOrEmpty); // false
 
-  final number = 42;
-  print(number.isTheAnswer()); // true
-}
+//   final number = 42;
+//   print(number.isTheAnswer()); // true
+// }
