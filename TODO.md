@@ -28,5 +28,7 @@
 - [x] (Minor) Handle getters and setters explicitly
 - [x] (Minor) Loosen generic type constraints
   - Fully implemented. Removing a bound is MINOR and changing to a less restrictive bound (supertype) is also MINOR.
+- [x] Fix ScenarioRunner to detect multiple changes in an example file
+  - Updated to scan for all MAJOR and MINOR changes in code comments and verify results more thoroughly
 - [ ] (Minor) Allow return types to change to a subtype
   - Requires deep type analysis to check for subtype relationships. Currently, any change is treated as MAJOR.

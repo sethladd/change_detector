@@ -57,7 +57,8 @@ class Logger {
 abstract class Identifiable {
   String getId();
 
-  // Added new abstract method - MAJOR breaking change for implementers
+  // Added new abstract method - this would be a major
+  //breaking change for implementers
   // This is only shown as an example of what NOT to do for MINOR changes
   String getDisplayName();
 }
