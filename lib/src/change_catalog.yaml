@@ -144,6 +144,11 @@ changes:
     title: Changing enum values
     description: Reordering enum values, which changes the public index of each value and breaks code relying on these indices.
 
+  - id: Major.29
+    category: major
+    title: Adding method to implementable class
+    description: Adding a new method to a public class breaks downstream code that implements the class's interface, since Dart classes implicitly define interfaces and the new method becomes an abstract requirement for implementors.
+
   # Minor Changes - Backward-compatible changes requiring a minor version bump
   - id: Minor.1
     category: minor
